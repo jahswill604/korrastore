@@ -27,7 +27,7 @@ Signup → Supabase Auth generates Token A → Sends Token A via SMTP (Resend) �
 | **Port** | `465` |
 | **Minimum Encryption** | `SSL` |
 | **Username** | `resend` |
-| **Password** | `re_W687osD6_AGsYH6Hmbjs6ekzZQkLpM4CY` |
+| **Password** | `re_YOUR_RESEND_API_KEY_HERE` |
 
 5. Click **Save**.
 
