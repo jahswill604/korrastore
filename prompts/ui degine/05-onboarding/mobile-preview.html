@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<!-- Mobile onboarding UI preview for Feature 05 — KorraStore -->
+<!-- Simulates full-viewport immersive layout at 390px width -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=375px, initial-scale=1.0" />
+  <title>KorraStore — Onboarding Mobile Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design Tokens ── */
+    :root {
+      --harvest-wheat: #D8B56A;
+      --husk: #A88958;
+      --soil: #4A3828;
+      --deep-grain-green: #21483A;
+      --trust-indigo: #303B63;
+      --paper: #F7F4EA;
+      --border: #E4DCC8;
+      --card-bg: #FDFAF3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Outer frame mimics a phone */
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #2C2C2C;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--paper);
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.08);
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(216,181,106,0.05) 24px, rgba(216,181,106,0.05) 25px);
+    }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 28px 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--soil);
+      font-weight: 500;
+    }
+
+    /* Inner full-viewport step wrapper */
+    .step-wrapper {
+      height: calc(844px - 44px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 28px 48px;
+      position: relative;
+    }
+
+    /* Skip button pinned top-right */
+    .skip-btn {
+      position: absolute;
+      top: 20px;
+      right: 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--trust-indigo);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* Logo small top-left */
+    .logo-small {
+      position: absolute;
+      top: 20px;
+      left: 28px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px;
+      color: var(--soil);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Center content group */
+    .center-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 100%;
+      padding-top: 20px;
+    }
+
+    /* Step label */
+    .step-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--husk);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    /* Illustration area */
+    .illustration {
+      width: 280px;
+      height: 200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .commodity-chip {
+      background: linear-gradient(135deg, #FDF5E4, #F0E2C0);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 34px;
+    }
+
+    .commodity-chip span.label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--husk);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: 30px;
+      color: var(--soil);
+      text-align: center;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .body-copy {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #7A6550;
+      text-align: center;
+      line-height: 1.65;
+    }
+
+    /* Dots */
+    .dots {
+      display: flex;
+      gap: 8px;
+      margin-top: 32px;
+      justify-content: center;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: transparent;
+    }
+    .dot.active {
+      background: var(--harvest-wheat);
+      border-color: var(--harvest-wheat);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* Bottom CTA */
+    .bottom-cta {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 36px;
+    }
+
+    .next-btn {
+      width: 100%;
+      background: var(--harvest-wheat);
+      color: var(--soil);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 17px;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(216,181,106,0.40);
+    }
+
+    .back-btn-inline {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--husk);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* Ledger receipt preview for step 2 */
+    .ledger-preview {
+      background: linear-gradient(160deg, #FBF6E9, #F2E9D5);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      width: 280px;
+      height: 200px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ledger-preview::after {
+      content: 'STORED';
+      position: absolute;
+      top: 16px; right: 16px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--deep-grain-green);
+      border: 1.5px solid var(--deep-grain-green);
+      padding: 2px 5px;
+      border-radius: 4px;
+      transform: rotate(8deg);
+    }
+    .ledger-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--soil);
+    }
+    .ledger-row.headline-row {
+      font-family: 'DM Serif Display', serif;
+      font-size: 15px;
+    }
+    .ledger-value { color: var(--deep-grain-green); font-weight: 600; }
+    .value-bar {
+      height: 30px;
+      background: linear-gradient(90deg, #E4DCC8, var(--harvest-wheat));
+      border-radius: 4px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+    }
+    .value-bar span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--soil);
+      font-weight: 600;
+    }
+
+    /* Step 3 two-path */
+    .two-path {
+      width: 280px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .path-box {
+      flex: 1;
+      height: 100%;
+      border-radius: 18px;
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: center;
+      padding: 12px;
+    }
+    .path-box.resale {
+      background: linear-gradient(160deg, #EEF1FF, #D8DFFF);
+      color: var(--trust-indigo);
+    }
+    .path-box.buyback {
+      background: linear-gradient(160deg, #ECF5EF, #D4EBDB);
+      color: var(--deep-grain-green);
+    }
+    .path-icon { font-size: 32px; }
+    .path-or {
+      font-family: 'DM Serif Display', serif;
+      font-size: 14px;
+      color: var(--husk);
+      writing-mode: vertical-rl;
+    }
+
+    /* Step selector tabs (demo only) */
+    .demo-tabs {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+    .tab-btn {
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 5px 12px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    .tab-btn.active-tab {
+      background: var(--harvest-wheat);
+      color: var(--soil);
+      border-color: var(--harvest-wheat);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo step selector (outside phone) -->
+  <div class="demo-tabs">
+    <button class="tab-btn active-tab" onclick="showStep(1, this)">Step 1</button>
+    <button class="tab-btn" onclick="showStep(2, this)">Step 2</button>
+    <button class="tab-btn" onclick="showStep(3, this)">Step 3</button>
+  </div>
+
+  <div class="phone-frame">
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>●●● 100%</span>
+    </div>
+
+    <!-- Step wrapper (full viewport feel) -->
+    <div class="step-wrapper">
+      <!-- Logo -->
+      <div class="logo-small">🌾 KorraStore</div>
+      <!-- Skip -->
+      <button class="skip-btn">Skip</button>
+
+      <!-- Center content -->
+      <div class="center-content" id="centerContent">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Dots -->
+      <div class="dots">
+        <div class="dot active" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+        <div class="dot" id="dot3"></div>
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="bottom-cta">
+        <button class="next-btn" id="nextBtn" onclick="advanceStep()">Next →</button>
+        <button class="back-btn-inline" id="backBtn" style="display:none;" onclick="retreatStep()">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const content = {
+      1: {
+        label: 'Step 1 of 3',
+        illustrationHTML: `
+          <div class="illustration">
+            <div class="commodity-chip">🌾<span class="label">Rice</span></div>
+            <div class="commodity-chip">🧄<span class="label">Garlic</span></div>
+            <div class="commodity-chip">🫘<span class="label">Beans</span></div>
+            <div class="commodity-chip">🌱<span class="label">Melon</span></div>
+          </div>`,
+        headline: 'Buy Real Commodities',
+        body: 'Rice, garlic, beans, melon — buy in bulk at market price and own the physical goods.',
+        next: 'Next →',
+        showBack: false,
+      },
+      2: {
+        label: 'Step 2 of 3',
+        illustrationHTML: `
+          <div class="ledger-preview">
+            <div class="ledger-row headline-row"><span>Rice (Ofada)</span></div>
+            <div class="ledger-row"><span>Qty</span><span>2 bags (100kg)</span></div>
+            <div class="ledger-row"><span>Purchase</span><span>₦130,000</span></div>
+            <div class="ledger-row"><span>Current</span><span class="ledger-value">₦138,600 ▲6.6%</span></div>
+            <div class="value-bar"><span>₦138,600</span></div>
+          </div>`,
+        headline: 'Own It, Track Its Value',
+        body: 'Your holdings live on a digital ledger receipt — watch your stored commodity value grow.',
+        next: 'Next →',
+        showBack: true,
+      },
+      3: {
+        label: 'Step 3 of 3',
+        illustrationHTML: `
+          <div class="two-path">
+            <div class="path-box resale">
+              <div class="path-icon">🛒</div>
+              Resell on Marketplace
+            </div>
+            <div class="path-or">or</div>
+            <div class="path-box buyback">
+              <div class="path-icon">💰</div>
+              Request Buyback
+            </div>
+          </div>`,
+        headline: 'Resell or Request a Buyback',
+        body: 'Sell your holdings on the marketplace or sell back to KorraStore anytime.',
+        next: 'Get Started',
+        showBack: true,
+      },
+    };
+
+    let step = 1;
+
+    function render() {
+      const s = content[step];
+      document.getElementById('centerContent').innerHTML = `
+        <div class="step-label">${s.label}</div>
+        ${s.illustrationHTML}
+        <div class="headline">${s.headline}</div>
+        <div class="body-copy">${s.body}</div>
+      `;
+      document.getElementById('nextBtn').textContent = s.next;
+      document.getElementById('backBtn').style.display = s.showBack ? 'block' : 'none';
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById('dot' + i).className = 'dot' + (i === step ? ' active' : '');
+      }
+    }
+
+    function advanceStep() { if (step < 3) { step++; syncTabs(); render(); } }
+    function retreatStep() { if (step > 1) { step--; syncTabs(); render(); } }
+
+    function showStep(n, btn) {
+      step = n;
+      syncTabs();
+      render();
+    }
+
+    function syncTabs() {
+      document.querySelectorAll('.tab-btn').forEach((t, i) => {
+        t.className = 'tab-btn' + (i + 1 === step ? ' active-tab' : '');
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>

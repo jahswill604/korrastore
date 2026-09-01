@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<!-- Desktop onboarding UI preview for Feature 05 — KorraStore -->
+<!-- Simulates the centered card layout at ~1440px viewport width -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KorraStore — Onboarding Desktop Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design Tokens ── */
+    :root {
+      --harvest-wheat: #D8B56A;
+      --husk: #A88958;
+      --soil: #4A3828;
+      --deep-grain-green: #21483A;
+      --trust-indigo: #303B63;
+      --paper: #F7F4EA;
+      --border: #E4DCC8;
+      --danger: #B3432E;
+      --card-bg: #FDFAF3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--paper);
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(216,181,106,0.06) 24px, rgba(216,181,106,0.06) 25px),
+        repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(216,181,106,0.04) 24px, rgba(216,181,106,0.04) 25px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    /* ── Logo bar ── */
+    .logo-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 48px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--soil);
+    }
+    .logo-bar .wheat-icon {
+      font-size: 26px;
+    }
+
+    /* ── Main Card ── */
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      width: 560px;
+      min-height: 520px;
+      padding: 48px 52px 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 40px rgba(74,56,40,0.10), 0 1px 4px rgba(74,56,40,0.06);
+    }
+
+    /* Skip button top-right of card */
+    .skip-btn {
+      position: absolute;
+      top: 22px;
+      right: 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--trust-indigo);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      opacity: 0.85;
+    }
+    .skip-btn:hover { opacity: 1; }
+
+    /* Step number indicator small label */
+    .step-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--husk);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* ── Illustration Area ── */
+    .illustration {
+      width: 260px;
+      height: 160px;
+      margin-bottom: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .commodity-chip {
+      background: linear-gradient(135deg, #FDF5E4 0%, #F5E9C8 100%);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 24px;
+    }
+
+    .commodity-chip span.label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--husk);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Text Content ── */
+    .headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: var(--soil);
+      text-align: center;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    .body-copy {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #7A6550;
+      text-align: center;
+      line-height: 1.6;
+      max-width: 380px;
+    }
+
+    /* ── Dot Indicators ── */
+    .dots {
+      display: flex;
+      gap: 8px;
+      margin-top: 36px;
+      margin-bottom: 0;
+      flex: 1;
+      align-items: flex-end;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .dot.active {
+      background: var(--harvest-wheat);
+      border-color: var(--harvest-wheat);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* ── Bottom Row ── */
+    .bottom-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 32px;
+    }
+    .back-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--husk);
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .next-btn {
+      background: var(--harvest-wheat);
+      color: var(--soil);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 12px rgba(216,181,106,0.35);
+      transition: background 0.15s, transform 0.12s;
+    }
+    .next-btn:hover {
+      background: var(--husk);
+      transform: translateY(-1px);
+    }
+
+    /* ── Step indicators for demo ── */
+    .step-tabs {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .step-tab {
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: var(--husk);
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      font-weight: 500;
+      background: transparent;
+    }
+    .step-tab.active-tab {
+      background: var(--soil);
+      color: #FDF8EE;
+      border-color: var(--soil);
+    }
+
+    /* Step 2 — LedgerReceipt preview */
+    .ledger-preview {
+      background: linear-gradient(160deg, #FBF6E9 0%, #F4ECDA 100%);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      width: 260px;
+      height: 160px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ledger-preview::after {
+      content: 'STORED';
+      position: absolute;
+      top: 14px; right: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--deep-grain-green);
+      border: 1.5px solid var(--deep-grain-green);
+      padding: 2px 5px;
+      border-radius: 4px;
+      transform: rotate(8deg);
+    }
+    .ledger-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--soil);
+    }
+    .ledger-row.headline-row {
+      font-family: 'DM Serif Display', serif;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .ledger-value {
+      color: var(--deep-grain-green);
+      font-weight: 600;
+    }
+    .value-bar {
+      height: 28px;
+      background: linear-gradient(90deg, #E4DCC8, var(--harvest-wheat));
+      border-radius: 4px;
+      margin-top: 4px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+    .value-bar span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      color: var(--soil);
+      font-weight: 600;
+    }
+
+    /* Step 3 — Two-path illustration */
+    .two-path {
+      width: 260px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+    }
+    .path-box {
+      flex: 1;
+      height: 100%;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .path-box.resale {
+      background: linear-gradient(160deg, #EFF3FF 0%, #DDE4F8 100%);
+      color: var(--trust-indigo);
+    }
+    .path-box.buyback {
+      background: linear-gradient(160deg, #EEF5F1 0%, #D9ECDF 100%);
+      color: var(--deep-grain-green);
+    }
+    .path-icon { font-size: 28px; }
+    .path-or {
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px;
+      color: var(--husk);
+    }
+
+    /* Label on card for demo version annotation */
+    .preview-badge {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--soil);
+      color: #FDF8EE;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo bar -->
+  <div class="logo-bar">
+    <span class="wheat-icon">🌾</span> KorraStore
+  </div>
+
+  <!-- Step selector tabs (demo only) -->
+  <div class="step-tabs">
+    <button class="step-tab active-tab" onclick="showStep(1, this)">Step 1: Buy</button>
+    <button class="step-tab" onclick="showStep(2, this)">Step 2: Track</button>
+    <button class="step-tab" onclick="showStep(3, this)">Step 3: Exit</button>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+    <button class="skip-btn">Skip</button>
+
+    <!-- Step label -->
+    <div class="step-label" id="stepLabel">Step 1 of 3</div>
+
+    <!-- Illustration -->
+    <div id="illustration">
+      <!-- Step 1 default -->
+      <div class="illustration" id="illus1">
+        <div class="commodity-chip">🌾<span class="label">Rice</span></div>
+        <div class="commodity-chip">🧄<span class="label">Garlic</span></div>
+        <div class="commodity-chip">🫘<span class="label">Beans</span></div>
+        <div class="commodity-chip">🌱<span class="label">Melon</span></div>
+      </div>
+    </div>
+
+    <!-- Headline -->
+    <div class="headline" id="headline">Buy Real Commodities</div>
+
+    <!-- Body -->
+    <div class="body-copy" id="bodyCopy">
+      Rice, garlic, beans, melon — buy in bulk at market price and own the physical goods, stored securely.
+    </div>
+
+    <!-- Dots -->
+    <div class="dots">
+      <div class="dot active" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+      <div class="dot" id="dot3"></div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row">
+      <button class="back-btn" id="backBtn" style="visibility:hidden;">← Back</button>
+      <button class="next-btn" id="nextBtn">Next →</button>
+    </div>
+  </div>
+
+  <div class="preview-badge">Desktop Preview · Feature 05</div>
+
+  <script>
+    const steps = {
+      1: {
+        label: 'Step 1 of 3',
+        illustrationHTML: `
+          <div class="illustration">
+            <div class="commodity-chip">🌾<span class="label">Rice</span></div>
+            <div class="commodity-chip">🧄<span class="label">Garlic</span></div>
+            <div class="commodity-chip">🫘<span class="label">Beans</span></div>
+            <div class="commodity-chip">🌱<span class="label">Melon</span></div>
+          </div>`,
+        headline: 'Buy Real Commodities',
+        body: 'Rice, garlic, beans, melon — buy in bulk at market price and own the physical goods, stored securely.',
+        nextLabel: 'Next →',
+        showBack: false,
+      },
+      2: {
+        label: 'Step 2 of 3',
+        illustrationHTML: `
+          <div class="ledger-preview">
+            <div class="ledger-row headline-row"><span>Rice (Ofada)</span></div>
+            <div class="ledger-row"><span>Qty</span><span>2 bags (100kg)</span></div>
+            <div class="ledger-row"><span>Purchase</span><span>₦130,000</span></div>
+            <div class="ledger-row"><span>Current</span><span class="ledger-value">₦138,600 ▲ 6.6%</span></div>
+            <div class="value-bar"><span>₦138,600</span></div>
+          </div>`,
+        headline: 'Own It, Track Its Value',
+        body: 'Your holdings live on a digital ledger receipt — watch your stored commodity value grow over time.',
+        nextLabel: 'Next →',
+        showBack: true,
+      },
+      3: {
+        label: 'Step 3 of 3',
+        illustrationHTML: `
+          <div class="two-path">
+            <div class="path-box resale">
+              <div class="path-icon">🛒</div>
+              Resell on Marketplace
+            </div>
+            <div class="path-or">or</div>
+            <div class="path-box buyback">
+              <div class="path-icon">💰</div>
+              Request Buyback
+            </div>
+          </div>`,
+        headline: 'Resell or Request a Buyback',
+        body: 'Sell your holdings to other buyers on the marketplace, or sell back to KorraStore anytime.',
+        nextLabel: 'Get Started',
+        showBack: true,
+      },
+    };
+
+    let currentStep = 1;
+
+    function showStep(n, btn) {
+      currentStep = n;
+      const s = steps[n];
+      document.getElementById('stepLabel').textContent = s.label;
+      document.getElementById('illustration').innerHTML = s.illustrationHTML;
+      document.getElementById('headline').textContent = s.headline;
+      document.getElementById('bodyCopy').textContent = s.body;
+      document.getElementById('nextBtn').textContent = s.nextLabel;
+      document.getElementById('backBtn').style.visibility = s.showBack ? 'visible' : 'hidden';
+
+      // Update dots
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById('dot' + i);
+        dot.className = 'dot' + (i === n ? ' active' : '');
+      }
+
+      // Update tab states
+      document.querySelectorAll('.step-tab').forEach((t, idx) => {
+        t.className = 'step-tab' + (idx + 1 === n ? ' active-tab' : '');
+      });
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (currentStep < 3) showStep(currentStep + 1, null);
+    });
+    document.getElementById('backBtn').addEventListener('click', () => {
+      if (currentStep > 1) showStep(currentStep - 1, null);
+    });
+  </script>
+</body>
+</html>

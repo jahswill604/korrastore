@@ -1,26 +1,98 @@
+/* app/globals.css — Global CSS Design Tokens & Base Theme for KorraStore.
+   Configures Light Mode Only tokens (Paper & Soil aesthetic), typography utility classes,
+   warm tinted box-shadows, and physical ledger ticket visual border utilities.
+   Used in: app/layout.tsx (globally imported across the entire application). */
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* KorraStore Light Mode Color Tokens */
+  --harvest-wheat: #D8B56A;
+  --husk: #A88958;
+  --soil: #4A3828;
+  --soil-secondary: #6B5A48;
+  --soil-tertiary: #8C7C68;
+  --deep-grain-green: #21483A;
+  --trust-indigo: #303B63;
+  --paper: #F7F4EA;
+  --paper-card: #FFFFFF;
+  --border-color: #E4DCC8;
+  --danger: #B3432E;
+  --warning: #C7862B;
+
+  /* Font Family Custom Properties (overridden by next/font in layout.tsx) */
+  --font-serif-display: 'DM Serif Display', Georgia, serif;
+  --font-sans-inter: 'Inter', system-ui, sans-serif;
+  --font-mono-plex: 'IBM Plex Mono', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Tailwind CSS v4 Theme Token Bindings */
+@theme {
+  --color-harvest-wheat: var(--harvest-wheat);
+  --color-husk: var(--husk);
+  --color-soil: var(--soil);
+  --color-soil-secondary: var(--soil-secondary);
+  --color-soil-tertiary: var(--soil-tertiary);
+  --color-deep-grain-green: var(--deep-grain-green);
+  --color-trust-indigo: var(--trust-indigo);
+  --color-paper: var(--paper);
+  --color-paper-card: var(--paper-card);
+  --color-border-theme: var(--border-color);
+  --color-danger-theme: var(--danger);
+  --color-warning-theme: var(--warning);
+
+  --font-serif: var(--font-serif-display);
+  --font-sans: var(--font-sans-inter);
+  --font-mono: var(--font-mono-plex);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base Document Styles (Paper Background & Soil Typography) */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--paper);
+  color: var(--soil);
+  font-family: var(--font-sans-inter);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Utility Classes */
+.font-serif-display,
+.font-serif-dm {
+  font-family: var(--font-serif-display);
+}
+
+.font-sans-inter {
+  font-family: var(--font-sans-inter);
+}
+
+.font-mono-plex {
+  font-family: var(--font-mono-plex);
+}
+
+/* Warm Tinted Soil Shadow Utilities */
+.shadow-soil-sm {
+  box-shadow: 0 1px 2px rgba(74, 56, 40, 0.08);
+}
+
+.shadow-soil-md {
+  box-shadow: 0 6px 20px rgba(74, 56, 40, 0.10);
+}
+
+.shadow-soil-lg {
+  box-shadow: 0 12px 32px rgba(74, 56, 40, 0.14);
+}
+
+/* Signature Ledger Ticket Visual Utilities */
+.receipt-dashed-divider {
+  border-top: 2px dashed var(--husk);
+  opacity: 0.5;
+}
+
+.receipt-perforated-edge {
+  background-image: radial-gradient(circle at 10px 0, transparent 8px, #FFFFFF 8px);
+  background-size: 20px 20px;
+  background-repeat: repeat-x;
 }
