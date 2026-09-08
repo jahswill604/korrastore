@@ -6,8 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { createServiceClient } from '@/lib/supabase/service';
-import { createPendingOrder } from '@/lib/supabase/queries/orders';
+import { createPendingOrder, getCheckoutCommodity } from '@/lib/supabase/queries/orders';
 import { paystackAdapter } from '@/lib/domain/payments/paystack-adapter';
 
 // -------------------------
@@ -18,20 +17,18 @@ import { paystackAdapter } from '@/lib/domain/payments/paystack-adapter';
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // -------------------------
   // Step 1: Verify the buyer's session using getUser() — mandatory per AGENTS.md §13.
+  // A real purchase must be tied to a real, authenticated buyer — no silent
+  // "demo user" fallback here.
   // -------------------------
   const supabase = await createClient();
-  let userId = 'user-demo';
-  let buyerEmail = 'buyer@korrastore.com';
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-  try {
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (!authError && user) {
-      userId = user.id;
-      buyerEmail = user.email || buyerEmail;
-    }
-  } catch (err) {
-    console.warn('[POST /api/orders] Session retrieval warning:', err);
+  if (authError || !user) {
+    return NextResponse.json({ error: 'You must be signed in to place an order.' }, { status: 401 });
   }
+
+  const userId = user.id;
+  const buyerEmail = user.email || 'buyer@korrastore.com';
 
   // -------------------------
   // Step 2: Parse and validate the request body.
@@ -59,31 +56,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // -------------------------
-  // Step 3: Re-fetch live inventory and commodity pricing.
+  // Step 3: Re-fetch live commodity, grade, and inventory data server-side.
+  // This is the SAME lookup the checkout page itself uses (getCheckoutCommodity),
+  // so what the buyer sees before paying matches what's validated here — no
+  // separate, drifting hardcoded price/stock table.
   // -------------------------
-  const serviceSupabase = createServiceClient();
-  let basePrice = 68500;
-  let commodityName = 'Premium Royal Long-Grain Parboiled Rice';
+  const checkoutData = await getCheckoutCommodity(commodityId, gradeId);
 
-  try {
-    const { data: commRow } = await serviceSupabase
-      .from('commodities')
-      .select('id, name, current_price, base_price')
-      .eq('id', commodityId)
-      .maybeSingle();
-
-    if (commRow) {
-      basePrice = Number(commRow.current_price || commRow.base_price || 68500);
-      commodityName = commRow.name || commodityName;
-    }
-  } catch (err) {
-    console.warn('[POST /api/orders] Failed querying commodity from DB:', err);
+  if (!checkoutData) {
+    return NextResponse.json({ error: 'Commodity or grade not found.' }, { status: 404 });
   }
 
-  const gradeCode: 'A' | 'B' | 'C' = gradeId.includes('b') ? 'B' : gradeId.includes('c') ? 'C' : 'A';
-  const priceMultiplier = gradeCode === 'A' ? 1.0 : gradeCode === 'B' ? 0.92 : 0.85;
-  const unitPrice = Math.round((basePrice * priceMultiplier) / 100) * 100;
-  const availableQuantity = gradeCode === 'C' ? 0 : gradeCode === 'B' ? 420 : 1250;
+  const { unitPrice, availableQuantity, commodityName } = checkoutData;
 
   // Quantity validation guard
   if (quantity > availableQuantity) {
@@ -119,7 +103,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     amountKobo: Math.round(pendingOrder.totalPrice * 100), // naira → kobo
     currency: 'NGN',
     commodityName,
-    gradeName: `Grade ${gradeCode}`,
+    gradeName: checkoutData.gradeName,
     callbackUrl,
   });
 
