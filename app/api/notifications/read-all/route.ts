@@ -9,7 +9,11 @@ import { markAllNotificationsAsRead } from '@/lib/supabase/queries/notifications
 
 // ----------------------------------------------------------------------------
 // POST Handler: Mark All In-App Notifications as Read
-// ----------------------------------------------------------------------------
+/**
+ * Marks all notifications as read for the authenticated user.
+ *
+ * @returns A successful response when notifications are marked as read; otherwise, an error response with status 500.
+ */
 export async function POST(_req: NextRequest) {
   try {
     // 1. Authenticate user session

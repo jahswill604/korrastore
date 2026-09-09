@@ -49,7 +49,12 @@ function formatRelativeTime(isoString: string): string {
 
 // ----------------------------------------------------------------------------
 // Fetch All Admin Orders (with Filtering & Metrics)
-// ----------------------------------------------------------------------------
+/**
+ * Retrieves a filtered, paginated list of orders and aggregate order metrics for administrative use.
+ *
+ * @param filters - Optional status, exception, search, page, and page-size filters.
+ * @returns The matching orders, aggregate metrics, pagination totals, and current page.
+ */
 
 export async function getAllAdminOrders(filters: AdminOrderFilters = {}): Promise<{
   orders: AdminOrderListItem[];
@@ -254,7 +259,12 @@ export async function getAllAdminOrders(filters: AdminOrderFilters = {}): Promis
 
 // ----------------------------------------------------------------------------
 // Fetch Single Admin Order Detail (with Audit Trail)
-// ----------------------------------------------------------------------------
+/**
+ * Retrieves detailed administrative information for an order, including its item, payment, and audit history.
+ *
+ * @param orderId - The identifier of the order to retrieve
+ * @returns The administrative order details, or `null` if the order cannot be found or fetched
+ */
 
 export async function getAdminOrderDetail(orderId: string): Promise<AdminOrderDetail | null> {
   const supabase = createServiceClient();

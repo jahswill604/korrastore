@@ -8,7 +8,12 @@ import { getLiveBuybackPrice } from '@/lib/supabase/queries/buyback';
 
 // ----------------------------------------------------------------------------
 // GET Handler: Fetch Live Buyback Price
-// ----------------------------------------------------------------------------
+/**
+ * Retrieves the current buyback price for a commodity.
+ *
+ * @param req - The request containing the `commodityId` query parameter
+ * @returns A response containing the buyback price, or an error response if the parameter is missing or the lookup fails
+ */
 
 export async function GET(req: NextRequest) {
   try {

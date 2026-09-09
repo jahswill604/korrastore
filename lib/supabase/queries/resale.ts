@@ -370,11 +370,11 @@ export async function getResaleListingById(
 // ----------------------------------------------------------------------------
 
 /**
- * Fetches all resale listings created by the authenticated seller.
- * Joins commodity, grade, and warehouse metadata for rich seller management display.
+ * Retrieves the seller's resale listings with commodity, grade, and warehouse details.
  *
- * @param userId - Authenticated user UUID
- * @param status - Optional status filter ('active', 'sold', 'expired', 'cancelled', 'all')
+ * @param userId - Seller's user ID
+ * @param status - Optional listing status filter; use `all` to include every status
+ * @returns The seller's matching resale listings
  */
 export async function getMyResaleListings(
   userId: string,
@@ -490,8 +490,10 @@ export async function getMyResaleListings(
 // ----------------------------------------------------------------------------
 
 /**
- * Creates a resale listing against an owned holding with atomic quantity reservation.
- * Clamps quantity to available non-reserved balance and records immutable holding movement.
+ * Creates an active resale listing for an owned holding and reserves the listed quantity.
+ *
+ * @param params - Seller, holding, quantity, unit price, and optional expiration duration.
+ * @returns The listing ID on success, or an error message on failure.
  */
 export async function createResaleListing(
   params: CreateResaleListingParams
@@ -608,8 +610,10 @@ export async function createResaleListing(
 // ----------------------------------------------------------------------------
 
 /**
- * Updates the unit price for an active resale listing owned by the authenticated user.
- * Preserves the holding reservation balance.
+ * Updates the unit price of an active resale listing owned by the user.
+ *
+ * @param newUnitPrice - The new positive unit price
+ * @returns `success: true` when the price is updated; otherwise, `success: false` with an error message
  */
 export async function updateListingPrice(
   userId: string,

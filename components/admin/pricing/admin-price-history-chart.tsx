@@ -27,7 +27,13 @@ type TimeRange = '7d' | '30d' | '90d' | 'All';
 
 // ----------------------------------------------------------------------------
 // AdminPriceHistoryChart Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders an interactive area chart showing historical prices for a commodity.
+ *
+ * @param history - Historical price points to display
+ * @param commodityName - Commodity name shown in the chart title
+ * @param unit - Price unit shown in the tooltip
+ */
 export function AdminPriceHistoryChart({
   history,
   commodityName,

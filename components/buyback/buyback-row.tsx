@@ -54,7 +54,12 @@ function renderStatusBadge(status: BuybackStatus) {
 
 // ----------------------------------------------------------------------------
 // BuybackRow Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders a responsive buyback request row with its details, status, payout, and actions.
+ *
+ * @param request - The buyback request to display.
+ * @returns The rendered buyback request row.
+ */
 
 export function BuybackRow({ request }: BuybackRowProps) {
   const formattedDate = (() => {

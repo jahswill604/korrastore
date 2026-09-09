@@ -9,7 +9,11 @@ import { createResaleListing } from '@/lib/supabase/queries/resale';
 
 // ----------------------------------------------------------------------------
 // POST Handler: Create Resale Listing
-// ----------------------------------------------------------------------------
+/**
+ * Creates a resale listing for the authenticated user and reserves the requested holding quantity.
+ *
+ * @returns A response containing the listing ID on success, or an error message with an appropriate HTTP status.
+ */
 
 export async function POST(req: NextRequest) {
   try {

@@ -24,6 +24,13 @@ interface PriceHistoryChartProps {
 
 type TimeRange = "7d" | "30d" | "90d" | "All";
 
+/**
+ * Renders an interactive price history chart for a commodity.
+ *
+ * @param priceHistory - Historical price points used to populate the chart
+ * @param commodityName - Commodity name displayed in the chart description
+ * @returns The rendered price history chart with range controls and price change summary
+ */
 export function PriceHistoryChart({
   priceHistory,
   commodityName,

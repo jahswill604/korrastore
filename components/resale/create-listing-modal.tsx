@@ -48,7 +48,14 @@ function formatNaira(amount: number): string {
 
 // ----------------------------------------------------------------------------
 // CreateListingModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders a modal for configuring and submitting a resale listing for a selected holding.
+ *
+ * @param isOpen - Whether the modal is visible
+ * @param onClose - Callback invoked when the modal closes
+ * @param holding - Holding to list for resale
+ * @param onSuccess - Optional callback invoked with the created listing ID after submission
+ */
 
 export function CreateListingModal({
   isOpen,

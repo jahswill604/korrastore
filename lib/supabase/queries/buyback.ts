@@ -132,8 +132,11 @@ const FALLBACK_BUYBACK_REQUESTS: BuybackRequest[] = [
 // ----------------------------------------------------------------------------
 
 /**
- * Returns all buyback requests belonging to the authenticated buyer.
- * Optionally filtered by status. Ordered newest-first.
+ * Retrieves the buyer's buyback requests, optionally filtered by status and ordered from newest to oldest.
+ *
+ * @param userId - The buyer's user ID
+ * @param status - Optional status filter
+ * @returns The matching buyback requests, or fallback demo requests when no records are available or the query fails
  */
 export async function getBuyerBuybackRequests(
   userId: string,
@@ -213,8 +216,11 @@ export async function getBuyerBuybackRequests(
 // ----------------------------------------------------------------------------
 
 /**
- * Returns full detail for one buyback request, verified by userId ownership.
- * Returns null if the request doesn't exist OR belongs to a different user.
+ * Retrieves a buyback request owned by the specified user.
+ *
+ * @param userId - The ID of the user who owns the request
+ * @param requestId - The ID of the buyback request
+ * @returns The matching buyback request, or `null` when no matching request is available
  */
 export async function getBuybackRequestDetail(
   userId: string,
@@ -367,12 +373,10 @@ export interface SubmitBuybackResult {
 }
 
 /**
- * Atomically submits a buyback request:
- * 1. Checks holding ownership and available quantity.
- * 2. Calls reserve_holding_quantity RPC (locks holding row).
- * 3. Re-fetches commodity live buyback price.
- * 4. Inserts into buyback_requests with status='pending'.
- * 5. Inserts into holding_movements with type='buyback_lock'.
+ * Submits a buyback request after verifying ownership and reserving the requested holding quantity.
+ *
+ * @param input - The user, holding, and quantity details for the buyback request
+ * @returns The submission result, including the request ID and total amount on success or an error message on failure
  */
 export async function submitBuybackRequest(
   input: SubmitBuybackInput

@@ -6,6 +6,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { resolveOrderException } from '@/lib/supabase/queries/admin/orders';
 
+/**
+ * Resolves an order exception through an authenticated admin action.
+ *
+ * @returns A response indicating the resolution result, authorization status, validation failure, or server error.
+ */
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }

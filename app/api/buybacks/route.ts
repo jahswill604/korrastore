@@ -9,7 +9,15 @@ import { submitBuybackRequest } from '@/lib/supabase/queries/buyback';
 
 // ----------------------------------------------------------------------------
 // POST Handler: Submit Buyback Request
-// ----------------------------------------------------------------------------
+/**
+ * Submits a buyback request for a holding.
+ *
+ * Unauthenticated requests use the demo user identity. Invalid input or failed
+ * submissions produce a 400 response; unexpected errors produce a 500 response.
+ *
+ * @param req - The request containing `holdingId` and a positive `quantity`
+ * @returns A response containing the submitted request ID and total amount, or an error message
+ */
 
 export async function POST(req: NextRequest) {
   try {

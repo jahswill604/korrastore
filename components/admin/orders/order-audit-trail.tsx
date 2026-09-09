@@ -17,6 +17,11 @@ interface OrderAuditTrailProps {
   auditTrail: AuditEntry[];
 }
 
+/**
+ * Displays an order's administrative audit history as a chronological timeline.
+ *
+ * @param auditTrail - Audit entries containing administrative actions, timestamps, actors, and state changes
+ */
 export function OrderAuditTrail({ auditTrail }: OrderAuditTrailProps) {
   if (!auditTrail || auditTrail.length === 0) {
     return (

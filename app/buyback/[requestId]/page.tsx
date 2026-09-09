@@ -36,7 +36,11 @@ interface BuybackDetailPageProps {
 
 // ----------------------------------------------------------------------------
 // BuybackDetailPage Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders the authenticated detail page for a specific buyback request.
+ *
+ * @param params - Route parameters containing the buyback request ID
+ */
 
 export default async function BuybackDetailPage({ params }: BuybackDetailPageProps) {
   const { requestId } = await params;

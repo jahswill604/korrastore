@@ -35,7 +35,11 @@ function getCommodityIcon(name: string): string {
 
 // ----------------------------------------------------------------------------
 // ResaleCard Component
-// ----------------------------------------------------------------------------
+/**
+ * Displays a resale listing with pricing details and a purchase action.
+ *
+ * @param listing - The resale listing to display and purchase
+ */
 
 export function ResaleCard({ listing }: ResaleCardProps) {
   const router = useRouter();

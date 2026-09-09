@@ -40,7 +40,13 @@ function formatNaira(amount: number): string {
 
 // ----------------------------------------------------------------------------
 // EditPriceModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Provides a dialog for updating the unit price of an active resale listing.
+ *
+ * @param listing - The resale listing whose unit price is being edited
+ * @param onSuccess - Optional callback invoked after the price is updated successfully
+ * @returns The price-editing dialog, or `null` when it is closed or no listing is provided
+ */
 
 export function EditPriceModal({
   isOpen,

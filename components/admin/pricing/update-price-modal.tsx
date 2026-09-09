@@ -22,7 +22,14 @@ interface UpdatePriceModalProps {
 
 // ----------------------------------------------------------------------------
 // UpdatePriceModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders an administrator modal for reviewing and updating a commodity's sale and buyback prices.
+ *
+ * @param commodity - The commodity whose pricing is being updated.
+ * @param isOpen - Whether the modal is visible.
+ * @param onClose - Called when the modal should close.
+ * @param onSuccess - Called after the price update succeeds.
+ */
 export function UpdatePriceModal({
   commodity,
   isOpen,

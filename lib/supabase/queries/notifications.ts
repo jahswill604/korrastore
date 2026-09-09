@@ -33,7 +33,13 @@ export interface InAppNotification {
 
 // ----------------------------------------------------------------------------
 // Helper to derive target deep link from notification payload/type
-// ----------------------------------------------------------------------------
+/**
+ * Derives a destination URL from a notification's type and payload.
+ *
+ * @param type - The notification type used to select a fallback route
+ * @param payload - Notification data containing an optional link or entity identifier
+ * @returns The destination URL, or `null` when no route can be determined
+ */
 export function deriveNotificationLink(
   type: string,
   payload: Record<string, unknown>
@@ -127,7 +133,13 @@ const DEMO_NOTIFICATIONS: InAppNotification[] = [
 
 // ----------------------------------------------------------------------------
 // Query: Fetch In-App Notifications for a User
-// ----------------------------------------------------------------------------
+/**
+ * Fetches a user's in-app notifications, optionally filtered by category.
+ *
+ * @param userId - The user whose notifications to retrieve
+ * @param filter - Optional filter: `unread`, `orders`, `resale`, `buyback`, or `pricing`
+ * @returns The user's notifications ordered from newest to oldest, or filtered demo notifications when records are unavailable
+ */
 export async function getInAppNotifications(
   userId: string,
   filter?: string
@@ -211,7 +223,11 @@ export async function getInAppNotifications(
 
 // ----------------------------------------------------------------------------
 // Query: Fast Indexed Unread Notifications Count
-// ----------------------------------------------------------------------------
+/**
+ * Counts unread in-app notifications for a user.
+ *
+ * @returns The number of unread notifications, or the unread demo notification count when the database result is unavailable.
+ */
 export async function getUnreadNotificationsCount(userId: string): Promise<number> {
   try {
     const supabase = createServiceClient();
@@ -292,7 +308,12 @@ export async function markAllNotificationsAsRead(userId: string): Promise<boolea
 
 // ----------------------------------------------------------------------------
 // Helper Mutation: Insert In-App Notification (used by domain event triggers)
-// ----------------------------------------------------------------------------
+/**
+ * Creates an unread in-app notification for a user.
+ *
+ * @param params - Notification details, including the recipient, content, type, and optional payload.
+ * @returns The created notification ID, or `null` if creation fails.
+ */
 export async function createInAppNotification(params: {
   userId: string;
   type: NotificationType | string;

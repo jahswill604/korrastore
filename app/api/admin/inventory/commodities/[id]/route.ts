@@ -24,7 +24,11 @@ async function requireAdmin(): Promise<{ adminId: string } | NextResponse> {
 
 // ----------------------------------------------------------------------------
 // PUT /api/admin/inventory/commodities/[id] — Full update
-// ----------------------------------------------------------------------------
+/**
+ * Updates the commodity identified by the route parameter.
+ *
+ * @returns A response containing the updated commodity, or an error response for unauthorized access, invalid JSON, or an update failure.
+ */
 
 export async function PUT(
   req: NextRequest,
@@ -49,7 +53,12 @@ export async function PUT(
 
 // ----------------------------------------------------------------------------
 // PATCH /api/admin/inventory/commodities/[id] — Toggle active / grade operations
-// ----------------------------------------------------------------------------
+/**
+ * Updates a commodity's active status or manages one of its grades.
+ *
+ * @param params - Route parameters containing the commodity identifier.
+ * @returns A response indicating the operation result or an error.
+ */
 
 export async function PATCH(
   req: NextRequest,

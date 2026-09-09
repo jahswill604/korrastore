@@ -9,7 +9,12 @@ import { markNotificationAsRead } from '@/lib/supabase/queries/notifications';
 
 // ----------------------------------------------------------------------------
 // POST Handler: Mark Notification as Read
-// ----------------------------------------------------------------------------
+/**
+ * Marks a notification as read for the authenticated user.
+ *
+ * @param params - Route parameters containing the notification ID
+ * @returns A JSON response indicating success or describing the error
+ */
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

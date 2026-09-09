@@ -35,7 +35,14 @@ interface RequestModalProps {
 
 // ----------------------------------------------------------------------------
 // RequestBuybackModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Displays a modal for submitting a buyback request for a selected holding.
+ *
+ * @param isOpen - Whether the modal is visible
+ * @param onClose - Callback invoked when the modal closes
+ * @param holding - Holding to sell back, or `null` when no holding is selected
+ * @returns The buyback request modal, or `null` when it is closed or no holding is selected
+ */
 
 export function RequestBuybackModal({ isOpen, onClose, holding }: RequestModalProps) {
   const router = useRouter();

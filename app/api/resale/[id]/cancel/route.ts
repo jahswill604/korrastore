@@ -9,7 +9,12 @@ import { cancelResaleListing } from '@/lib/supabase/queries/resale';
 
 // ----------------------------------------------------------------------------
 // POST Handler: Cancel Resale Listing
-// ----------------------------------------------------------------------------
+/**
+ * Cancels an authenticated user's resale listing and releases its reserved quantity.
+ *
+ * @param params - Route parameters containing the resale listing identifier.
+ * @returns A response indicating whether the listing was cancelled successfully.
+ */
 
 export async function POST(
   req: NextRequest,

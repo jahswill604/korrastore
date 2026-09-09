@@ -30,7 +30,13 @@ interface CancelListingDialogProps {
 
 // ----------------------------------------------------------------------------
 // CancelListingDialog Component
-// ----------------------------------------------------------------------------
+/**
+ * Displays a confirmation dialog for cancelling an active resale listing.
+ *
+ * @param listing - The resale listing to cancel, or `null` when no listing is selected.
+ * @param onSuccess - Optional callback invoked after the listing is cancelled successfully.
+ * @returns The cancellation dialog, or `null` when the dialog is closed or no listing is provided.
+ */
 
 export function CancelListingDialog({
   isOpen,

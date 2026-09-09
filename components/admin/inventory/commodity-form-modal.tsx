@@ -21,7 +21,13 @@ interface CommodityFormModalProps {
 
 // ----------------------------------------------------------------------------
 // CommodityFormModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Displays a modal for creating or editing a commodity and managing its quality grades.
+ *
+ * @param commodity - The commodity to edit; omit to create a new commodity.
+ * @param isOpen - Whether the modal is visible.
+ * @param onClose - Callback invoked after the modal is closed or successfully saved.
+ */
 
 export function CommodityFormModal({
   commodity,

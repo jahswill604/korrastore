@@ -9,7 +9,12 @@ import { updateListingPrice } from '@/lib/supabase/queries/resale';
 
 // ----------------------------------------------------------------------------
 // PATCH Handler: Update Resale Listing Asking Price
-// ----------------------------------------------------------------------------
+/**
+ * Updates the asking unit price for an authenticated resale listing.
+ *
+ * @param params - Route parameters containing the listing ID
+ * @returns A response indicating whether the price was updated successfully
+ */
 
 export async function PATCH(
   req: NextRequest,

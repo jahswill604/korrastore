@@ -135,12 +135,14 @@ const DEMO_RECEIPTS: Record<string, ReceiptDetail> = {
 // ----------------------------------------------------------------------------
 
 /**
- * Fetches structured receipt details for a given receipt identifier and verifies ownership.
- * Dynamically joins the underlying holding and commodity pricing to compute live market valuation.
+ * Retrieves normalized receipt details for a user-owned receipt or order.
  *
- * @param userId - Authenticated user UUID from supabase.auth.getUser()
- * @param receiptIdOrOrderId - Receipt UUID, serial number, or order UUID
- * @returns ReceiptDetail or null if not found or unauthorized
+ * Uses current holding or commodity pricing when available and supports pending
+ * orders and development fallback records.
+ *
+ * @param userId - User ID used to restrict receipt and order lookups
+ * @param receiptIdOrOrderId - Receipt ID, receipt number, holding ID, or order ID
+ * @returns The normalized receipt details, or `null` when no matching record exists
  */
 export async function getReceiptDetail(
   userId: string,

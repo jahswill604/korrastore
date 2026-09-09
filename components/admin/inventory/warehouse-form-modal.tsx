@@ -20,7 +20,14 @@ interface WarehouseFormModalProps {
 
 // ----------------------------------------------------------------------------
 // WarehouseFormModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Provides a modal form for creating or editing an administrative warehouse record.
+ *
+ * @param warehouse - The warehouse to edit, or `undefined` to create a new warehouse.
+ * @param isOpen - Whether the modal is visible.
+ * @param onClose - Callback invoked when the modal closes or saves successfully.
+ * @returns The warehouse form modal, or `null` when closed.
+ */
 
 export function WarehouseFormModal({
   warehouse,

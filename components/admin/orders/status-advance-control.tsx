@@ -14,6 +14,14 @@ interface StatusAdvanceControlProps {
   isException?: boolean;
 }
 
+/**
+ * Provides controlled advancement of an order through valid fulfillment-status transitions.
+ *
+ * @param orderId - The identifier of the order to update.
+ * @param currentStatus - The order's current fulfillment status.
+ * @param isException - Whether the order is in an exception state that blocks standard advancement.
+ * @returns The status advancement control interface.
+ */
 export function StatusAdvanceControl({
   orderId,
   currentStatus,

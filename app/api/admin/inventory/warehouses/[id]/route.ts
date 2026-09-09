@@ -9,6 +9,11 @@ import { createClient } from '@/lib/supabase/server';
 import { upsertWarehouse, toggleWarehouseActive } from '@/lib/supabase/queries/admin/inventory';
 import { UpsertWarehousePayload } from '@/lib/types/admin-inventory';
 
+/**
+ * Authenticates the current user and verifies administrator access.
+ *
+ * @returns The administrator's user ID, or an unauthorized or forbidden response.
+ */
 async function requireAdmin(): Promise<{ adminId: string } | NextResponse> {
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
@@ -18,7 +23,11 @@ async function requireAdmin(): Promise<{ adminId: string } | NextResponse> {
   return { adminId: user.id };
 }
 
-// PUT /api/admin/inventory/warehouses/[id]
+/**
+ * Updates an administrator-managed warehouse identified by the route parameter.
+ *
+ * @returns A response containing the updated warehouse, or an error response for unauthorized access, invalid JSON, or update failure.
+ */
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
