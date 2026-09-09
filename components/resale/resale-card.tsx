@@ -19,6 +19,37 @@ export interface ResaleCardProps {
   listing: PublicResaleListing;
 }
 
+// Shared clock store keeps snapshots stable and notifies cards once per minute.
+let currentTimeSnapshot = 0;
+let clockInterval: ReturnType<typeof setInterval> | null = null;
+const clockListeners = new Set<() => void>();
+
+function updateTimeSnapshot() {
+  currentTimeSnapshot = Date.now();
+  clockListeners.forEach((listener) => listener());
+}
+
+function subscribeToClock(listener: () => void) {
+  clockListeners.add(listener);
+
+  if (clockListeners.size === 1) {
+    updateTimeSnapshot();
+    clockInterval = setInterval(updateTimeSnapshot, 60_000);
+  }
+
+  return () => {
+    clockListeners.delete(listener);
+    if (clockListeners.size === 0 && clockInterval) {
+      clearInterval(clockInterval);
+      clockInterval = null;
+    }
+  };
+}
+
+function getTimeSnapshot() {
+  return currentTimeSnapshot;
+}
+
 // ----------------------------------------------------------------------------
 // Commodity Icon/Emoji Map for Visual Fallbacks
 // ----------------------------------------------------------------------------
@@ -55,12 +86,10 @@ export function ResaleCard({ listing }: ResaleCardProps) {
       : 'Grade C'
   ) as CommodityGrade;
 
-  // "Now" read via useSyncExternalStore — the sanctioned way to read an
-  // external, impure value (Date.now()) without violating the render-purity
-  // rule that a plain `Date.now()` call inside useMemo/render trips.
+  // The cached snapshot changes only when the shared clock notifies subscribers.
   const now = React.useSyncExternalStore(
-    () => () => {},
-    () => Date.now(),
+    subscribeToClock,
+    getTimeSnapshot,
     () => 0
   );
 

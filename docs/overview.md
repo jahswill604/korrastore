@@ -2787,6 +2787,13 @@ and onboarding redirects across all incoming HTTP requests.
 | L14–L19 | Metadata | SEO metadata for Commodity Pricing & Valuation. |
 | L25–L55 | `AdminPricingPage()` | Queries all commodity prices and operational metrics parallelly, rendering header, `PricingMetrics`, and `PricingTable`. |
 
+---
+
+## Maintenance: client-safe errors and stable display values
+
+- Buyback and notification route handlers log unexpected exceptions server-side and return a generic 500 response without exposing exception details.
+- Buyback grade badges use shared normalization for database names/codes, including the legacy `Standard` label and a `Grade A` fallback.
+- Resale listing dates read from a cached minute-based clock store so React snapshots remain stable between subscription updates.
 
 
 

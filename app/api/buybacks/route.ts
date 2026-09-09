@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('[POST /api/buybacks] Internal error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal Server Error' },
+      { error: 'Internal server error.' },
       { status: 500 }
     );
   }

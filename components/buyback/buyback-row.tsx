@@ -7,7 +7,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { BuybackRequestRow, BuybackStatus } from '@/lib/supabase/queries/buyback';
-import { GradeBadge, CommodityGrade } from '@/components/ui/grade-badge';
+import { GradeBadge, normalizeCommodityGrade } from '@/components/ui/grade-badge';
 
 // ----------------------------------------------------------------------------
 // Props Interface
@@ -62,6 +62,7 @@ function renderStatusBadge(status: BuybackStatus) {
  */
 
 export function BuybackRow({ request }: BuybackRowProps) {
+  const grade = normalizeCommodityGrade(request.grade_name, request.grade_code);
   const formattedDate = (() => {
     try {
       return new Date(request.requested_at).toLocaleDateString('en-NG', {
@@ -84,7 +85,7 @@ export function BuybackRow({ request }: BuybackRowProps) {
             {request.commodity_name}
           </p>
           <div className="mt-1">
-            <GradeBadge grade={(request.grade_name as CommodityGrade) || 'Grade A'} size="sm" />
+            <GradeBadge grade={grade} size="sm" />
           </div>
         </div>
 
@@ -139,7 +140,7 @@ export function BuybackRow({ request }: BuybackRowProps) {
               {request.commodity_name}
             </h4>
             <div className="mt-1">
-              <GradeBadge grade={(request.grade_name as CommodityGrade) || 'Grade A'} size="sm" />
+              <GradeBadge grade={grade} size="sm" />
             </div>
           </div>
           <div>{renderStatusBadge(request.status)}</div>

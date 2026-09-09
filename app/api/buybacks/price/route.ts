@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('[GET /api/buybacks/price] Error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal Server Error' },
+      { error: 'Internal server error.' },
       { status: 500 }
     );
   }

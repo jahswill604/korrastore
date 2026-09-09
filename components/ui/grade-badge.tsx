@@ -8,6 +8,39 @@ import { cn } from "@/lib/utils";
 // Quality grade options type.
 export type CommodityGrade = "Grade A" | "Grade B" | "Grade C" | "Premium" | "Export Grade" | "A+" | "A" | "B" | "C";
 
+// Canonicalizes database grade names/codes before they reach the badge primitive.
+const COMMODITY_GRADE_MAP = new Map<string, CommodityGrade>([
+  ["grade a", "Grade A"],
+  ["grade b", "Grade B"],
+  ["grade c", "Grade C"],
+  ["premium", "Premium"],
+  ["export grade", "Export Grade"],
+  ["a+", "A+"],
+  ["a", "Grade A"],
+  ["b", "Grade B"],
+  ["c", "Grade C"],
+  ["standard", "Grade B"],
+  ["standard grade", "Grade B"],
+]);
+
+/** Returns a supported badge grade, falling back to Grade A for unknown values. */
+export function normalizeCommodityGrade(
+  gradeName?: string | null,
+  gradeCode?: string | null
+): CommodityGrade {
+  for (const value of [gradeName, gradeCode]) {
+    const normalizedValue = value?.trim().toLowerCase();
+    const grade = normalizedValue
+      ? COMMODITY_GRADE_MAP.get(normalizedValue)
+      : undefined;
+    if (grade) {
+      return grade;
+    }
+  }
+
+  return "Grade A";
+}
+
 // Interface for GradeBadge component props.
 export interface GradeBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   // Commodity quality grade

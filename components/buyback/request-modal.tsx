@@ -8,7 +8,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { GradeBadge, CommodityGrade } from '@/components/ui/grade-badge';
+import { GradeBadge, normalizeCommodityGrade } from '@/components/ui/grade-badge';
 
 // ----------------------------------------------------------------------------
 // Props & Type Interfaces
@@ -198,7 +198,10 @@ export function RequestBuybackModal({ isOpen, onClose, holding }: RequestModalPr
                 {holding.commodityName}
               </p>
               <div className="flex items-center gap-2 mt-1">
-                <GradeBadge grade={(holding.gradeName as CommodityGrade) || 'Grade A'} size="sm" />
+                <GradeBadge
+                  grade={normalizeCommodityGrade(holding.gradeName, holding.gradeCode)}
+                  size="sm"
+                />
                 <span className="text-xs font-sans-inter text-[#A88958]">
                   {holding.warehouseName || 'KorraStore Warehouse'}
                 </span>
