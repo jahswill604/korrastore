@@ -10,14 +10,14 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "./nav-rail";
 
-// 5 primary mobile bottom bar tabs matching mobile-ui.png
-const MOBILE_TABS = [
-  NAV_ITEMS[0], // Home
-  NAV_ITEMS[1], // Store
-  NAV_ITEMS[2], // Storage
-  NAV_ITEMS[4], // Orders
-  NAV_ITEMS[8], // Profile
-];
+// 5 primary mobile bottom bar tabs matching mobile-ui.png.
+// Looked up by iconName rather than array index — indices shift whenever
+// NAV_ITEMS gains or loses an entry (see bug: removing Resale/Transfer from
+// NAV_ITEMS silently broke the old NAV_ITEMS[8] lookup below).
+const MOBILE_TAB_ICON_NAMES = ["home", "store", "storage", "orders", "profile"];
+const MOBILE_TABS = MOBILE_TAB_ICON_NAMES.map((iconName) =>
+  NAV_ITEMS.find((item) => item.iconName === iconName)
+).filter((item): item is (typeof NAV_ITEMS)[number] => Boolean(item));
 
 // BottomTabBar component definition.
 export const BottomTabBar: React.FC<{ className?: string }> = ({ className }) => {

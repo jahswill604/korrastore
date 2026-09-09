@@ -49,7 +49,12 @@ function formatRelativeTime(isoString: string): string {
 
 // ----------------------------------------------------------------------------
 // Fetch All Admin Orders (with Filtering & Metrics)
-// ----------------------------------------------------------------------------
+/**
+ * Retrieves a filtered, paginated list of orders and aggregate order metrics for administrative use.
+ *
+ * @param filters - Optional status, exception, search, page, and page-size filters.
+ * @returns The matching orders, aggregate metrics, pagination totals, and current page.
+ */
 
 export async function getAllAdminOrders(filters: AdminOrderFilters = {}): Promise<{
   orders: AdminOrderListItem[];
@@ -160,7 +165,38 @@ export async function getAllAdminOrders(filters: AdminOrderFilters = {}): Promis
   }
 
   // Transform raw Supabase rows into strongly-typed AdminOrderListItem[]
-  const orders: AdminOrderListItem[] = (data || []).map((row: any) => {
+  // Shape mirrors the `select(...)` above exactly — Supabase returns nested
+  // relations as an object for a to-one join and an array for to-many, so
+  // both are permitted here rather than reaching for `any`.
+  type MaybeArray<T> = T | T[] | null;
+  interface RawOrderItemRow {
+    id: string;
+    commodity_id: string;
+    grade_id: string;
+    quantity: number;
+    unit_price: number;
+    total_price: number;
+    commodities: MaybeArray<{ name?: string; unit?: string; image_url?: string }>;
+    commodity_grades: MaybeArray<{ grade_name?: string; grade_code?: string }>;
+  }
+  interface RawAdminOrderRow {
+    id: string;
+    user_id: string;
+    status: string;
+    total_amount: number;
+    platform_fee: number;
+    delivery_type: string;
+    delivery_address: string | null;
+    is_exception: boolean;
+    exception_reason: string | null;
+    created_at: string;
+    updated_at: string;
+    profiles: MaybeArray<{ full_name?: string; email?: string; phone_number?: string }>;
+    order_items: MaybeArray<RawOrderItemRow>;
+    payments: MaybeArray<{ status?: string }>;
+  }
+
+  const orders: AdminOrderListItem[] = ((data || []) as unknown as RawAdminOrderRow[]).map((row) => {
     const profile = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles;
     const rawItem = Array.isArray(row.order_items) ? row.order_items[0] : row.order_items;
     const rawCommodity = rawItem?.commodities
@@ -223,7 +259,12 @@ export async function getAllAdminOrders(filters: AdminOrderFilters = {}): Promis
 
 // ----------------------------------------------------------------------------
 // Fetch Single Admin Order Detail (with Audit Trail)
-// ----------------------------------------------------------------------------
+/**
+ * Retrieves detailed administrative information for an order, including its item, payment, and audit history.
+ *
+ * @param orderId - The identifier of the order to retrieve
+ * @returns The administrative order details, or `null` if the order cannot be found or fetched
+ */
 
 export async function getAdminOrderDetail(orderId: string): Promise<AdminOrderDetail | null> {
   const supabase = createServiceClient();
@@ -302,7 +343,16 @@ export async function getAdminOrderDetail(orderId: string): Promise<AdminOrderDe
     .eq('entity_id', orderId)
     .order('created_at', { ascending: false });
 
-  const auditTrail = (rawAuditLogs || []).map((log: any) => {
+  interface RawAuditLogRow {
+    id: string;
+    action: string;
+    old_state: Record<string, unknown> | null;
+    new_state: Record<string, unknown> | null;
+    created_at: string;
+    profiles: { email?: string } | { email?: string }[] | null;
+  }
+
+  const auditTrail = (rawAuditLogs || []).map((log: RawAuditLogRow) => {
     const actorProfile = Array.isArray(log.profiles) ? log.profiles[0] : log.profiles;
     return {
       id: log.id,

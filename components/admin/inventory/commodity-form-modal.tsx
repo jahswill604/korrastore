@@ -21,7 +21,13 @@ interface CommodityFormModalProps {
 
 // ----------------------------------------------------------------------------
 // CommodityFormModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Displays a modal for creating or editing a commodity and managing its quality grades.
+ *
+ * @param commodity - The commodity to edit; omit to create a new commodity.
+ * @param isOpen - Whether the modal is visible.
+ * @param onClose - Callback invoked after the modal is closed or successfully saved.
+ */
 
 export function CommodityFormModal({
   commodity,
@@ -42,54 +48,63 @@ export function CommodityFormModal({
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  // Sync state when editing commodity changes or modal opens
-  React.useEffect(() => {
-    if (isOpen) {
-      if (commodity) {
-        setName(commodity.name);
-        setCode(commodity.code);
-        setDescription(commodity.description || "");
-        setUnit(commodity.unit || "kg");
-        setBasePrice(commodity.base_price || 0);
-        setCurrentPrice(commodity.current_price || 0);
-        setActive(commodity.active ?? true);
+  // Reset form fields whenever the modal is (re)opened, or a different
+  // commodity is being edited. Adjusting state during render (rather than in
+  // a useEffect) is the pattern React recommends for "reset state when a prop
+  // changes" — see https://react.dev/learn/you-might-not-need-an-effect
+  const resetIdentity = isOpen ? (commodity ? `edit:${commodity.id}` : "create") : null;
+  const [prevResetIdentity, setPrevResetIdentity] = React.useState<string | null>(null);
+  if (resetIdentity !== prevResetIdentity) {
+    setPrevResetIdentity(resetIdentity);
+    if (resetIdentity && commodity) {
+      setName(commodity.name);
+      setCode(commodity.code);
+      setDescription(commodity.description || "");
+      setUnit(commodity.unit || "kg");
+      setBasePrice(commodity.base_price || 0);
+      setCurrentPrice(commodity.current_price || 0);
+      setActive(commodity.active ?? true);
+    } else if (resetIdentity === "create") {
+      setName("");
+      setCode("");
+      setDescription("");
+      setUnit("kg");
+      setBasePrice(0);
+      setCurrentPrice(0);
+      setActive(true);
+      setGrades([
+        {
+          id: `temp_1`,
+          commodity_id: "",
+          code: "A",
+          name: "Grade A Premium",
+          description: "High purity, cleaned & sorted",
+          active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        {
+          id: `temp_2`,
+          commodity_id: "",
+          code: "B",
+          name: "Grade B Standard",
+          description: "Standard market grade",
+          active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ]);
+    }
+    if (resetIdentity) setError(null);
+  }
 
-        // Fetch full grades for this commodity
-        fetch(`/api/admin/inventory/commodities`)
-          .then((res) => res.json())
-          .catch(() => {});
-      } else {
-        setName("");
-        setCode("");
-        setDescription("");
-        setUnit("kg");
-        setBasePrice(0);
-        setCurrentPrice(0);
-        setActive(true);
-        setGrades([
-          {
-            id: `temp_1`,
-            commodity_id: "",
-            code: "A",
-            name: "Grade A Premium",
-            description: "High purity, cleaned & sorted",
-            active: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-          {
-            id: `temp_2`,
-            commodity_id: "",
-            code: "B",
-            name: "Grade B Standard",
-            description: "Standard market grade",
-            active: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-        ]);
-      }
-      setError(null);
+  // Fetching this commodity's full grade list from the server on open IS a
+  // genuine effect (reading from an external system), so it stays here.
+  React.useEffect(() => {
+    if (isOpen && commodity) {
+      fetch(`/api/admin/inventory/commodities`)
+        .then((res) => res.json())
+        .catch(() => {});
     }
   }, [isOpen, commodity]);
 

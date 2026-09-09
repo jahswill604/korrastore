@@ -5,7 +5,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { PriceHistoryPoint } from '@/lib/types/admin-pricing';
 import {
   ResponsiveContainer,
@@ -27,18 +27,26 @@ type TimeRange = '7d' | '30d' | '90d' | 'All';
 
 // ----------------------------------------------------------------------------
 // AdminPriceHistoryChart Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders an interactive area chart showing historical prices for a commodity.
+ *
+ * @param history - Historical price points to display
+ * @param commodityName - Commodity name shown in the chart title
+ * @param unit - Price unit shown in the tooltip
+ */
 export function AdminPriceHistoryChart({
   history,
   commodityName,
   unit = 'kg',
 }: AdminPriceHistoryChartProps) {
   const [range, setRange] = useState<TimeRange>('30d');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Client-mount guard for Recharts' ResponsiveContainer (avoids SSR/CSR
+  // hydration mismatch on first paint).
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Filter history points based on selected range
   const filteredData = useMemo(() => {

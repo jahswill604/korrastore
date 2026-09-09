@@ -9,7 +9,12 @@ import { updateListingPrice } from '@/lib/supabase/queries/resale';
 
 // ----------------------------------------------------------------------------
 // PATCH Handler: Update Resale Listing Asking Price
-// ----------------------------------------------------------------------------
+/**
+ * Updates the asking unit price for an authenticated resale listing.
+ *
+ * @param params - Route parameters containing the listing ID
+ * @returns A response indicating whether the price was updated successfully
+ */
 
 export async function PATCH(
   req: NextRequest,
@@ -64,10 +69,10 @@ export async function PATCH(
       success: true,
       message: 'Listing asking price updated successfully.',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[PATCH /api/resale/[id]/price] Internal error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

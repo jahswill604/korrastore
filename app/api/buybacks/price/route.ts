@@ -8,7 +8,12 @@ import { getLiveBuybackPrice } from '@/lib/supabase/queries/buyback';
 
 // ----------------------------------------------------------------------------
 // GET Handler: Fetch Live Buyback Price
-// ----------------------------------------------------------------------------
+/**
+ * Retrieves the current buyback price for a commodity.
+ *
+ * @param req - The request containing the `commodityId` query parameter
+ * @returns A response containing the buyback price, or an error response if the parameter is missing or the lookup fails
+ */
 
 export async function GET(req: NextRequest) {
   try {
@@ -29,10 +34,10 @@ export async function GET(req: NextRequest) {
       commodityId,
       buybackPrice: price,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[GET /api/buybacks/price] Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

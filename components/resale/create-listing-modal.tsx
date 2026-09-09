@@ -48,7 +48,14 @@ function formatNaira(amount: number): string {
 
 // ----------------------------------------------------------------------------
 // CreateListingModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders a modal for configuring and submitting a resale listing for a selected holding.
+ *
+ * @param isOpen - Whether the modal is visible
+ * @param onClose - Callback invoked when the modal closes
+ * @param holding - Holding to list for resale
+ * @param onSuccess - Optional callback invoked with the created listing ID after submission
+ */
 
 export function CreateListingModal({
   isOpen,
@@ -67,14 +74,17 @@ export function CreateListingModal({
   const [durationDays, setDurationDays] = useState<number>(30);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Sync state when holding changes
-  React.useEffect(() => {
-    if (holding) {
-      setQuantity(Math.min(100, Math.max(1, holding.availableQuantity)));
-      setUnitPrice(holding.currentUnitPrice ? holding.currentUnitPrice.toString() : '1850');
-      setErrorMessage(null);
-    }
-  }, [holding]);
+  // Reset form fields when a different holding is opened. Adjusting state
+  // during render (rather than in a useEffect) is the pattern React itself
+  // recommends for "reset state when a prop changes" — see
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevHoldingId, setPrevHoldingId] = useState<string | undefined>(holding?.id);
+  if (holding && holding.id !== prevHoldingId) {
+    setPrevHoldingId(holding.id);
+    setQuantity(Math.min(100, Math.max(1, holding.availableQuantity)));
+    setUnitPrice(holding.currentUnitPrice ? holding.currentUnitPrice.toString() : '1850');
+    setErrorMessage(null);
+  }
 
   if (!isOpen || !holding) return null;
 
@@ -128,8 +138,8 @@ export function CreateListingModal({
         }
         router.refresh();
         router.push('/resale/my-listings');
-      } catch (err: any) {
-        setErrorMessage(err.message || 'An error occurred while creating the listing.');
+      } catch (err) {
+        setErrorMessage(err instanceof Error ? err.message : 'An error occurred while creating the listing.');
       }
     });
   };

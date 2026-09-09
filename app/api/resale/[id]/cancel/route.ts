@@ -9,7 +9,12 @@ import { cancelResaleListing } from '@/lib/supabase/queries/resale';
 
 // ----------------------------------------------------------------------------
 // POST Handler: Cancel Resale Listing
-// ----------------------------------------------------------------------------
+/**
+ * Cancels an authenticated user's resale listing and releases its reserved quantity.
+ *
+ * @param params - Route parameters containing the resale listing identifier.
+ * @returns A response indicating whether the listing was cancelled successfully.
+ */
 
 export async function POST(
   req: NextRequest,
@@ -52,10 +57,10 @@ export async function POST(
       success: true,
       message: 'Listing cancelled successfully and reserved quantity released.',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[POST /api/resale/[id]/cancel] Internal error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

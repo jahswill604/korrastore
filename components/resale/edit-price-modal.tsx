@@ -40,7 +40,13 @@ function formatNaira(amount: number): string {
 
 // ----------------------------------------------------------------------------
 // EditPriceModal Component
-// ----------------------------------------------------------------------------
+/**
+ * Provides a dialog for updating the unit price of an active resale listing.
+ *
+ * @param listing - The resale listing whose unit price is being edited
+ * @param onSuccess - Optional callback invoked after the price is updated successfully
+ * @returns The price-editing dialog, or `null` when it is closed or no listing is provided
+ */
 
 export function EditPriceModal({
   isOpen,
@@ -55,12 +61,15 @@ export function EditPriceModal({
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    if (listing) {
-      setUnitPrice(listing.unitPrice.toString());
-      setErrorMessage(null);
-    }
-  }, [listing]);
+  // Reset the price field when a different listing is opened. Adjusting state
+  // during render (rather than in a useEffect) is the pattern React itself
+  // recommends for "reset state when a prop changes".
+  const [prevListingId, setPrevListingId] = useState<string | undefined>(listing?.id);
+  if (listing && listing.id !== prevListingId) {
+    setPrevListingId(listing.id);
+    setUnitPrice(listing.unitPrice.toString());
+    setErrorMessage(null);
+  }
 
   if (!isOpen || !listing) return null;
 
@@ -94,8 +103,8 @@ export function EditPriceModal({
         onClose();
         if (onSuccess) onSuccess();
         router.refresh();
-      } catch (err: any) {
-        setErrorMessage(err.message || 'An error occurred while updating price.');
+      } catch (err) {
+        setErrorMessage(err instanceof Error ? err.message : 'An error occurred while updating price.');
       }
     });
   };

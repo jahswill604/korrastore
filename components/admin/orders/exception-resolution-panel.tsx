@@ -12,6 +12,12 @@ interface ExceptionResolutionPanelProps {
   exceptionReason?: string | null;
 }
 
+/**
+ * Provides administrators with actions to resolve an order inventory exception.
+ *
+ * @param orderId - The identifier of the order whose exception is being resolved
+ * @param exceptionReason - Optional explanation displayed for the inventory exception
+ */
 export function ExceptionResolutionPanel({
   orderId,
   exceptionReason,
@@ -53,8 +59,8 @@ export function ExceptionResolutionPanel({
       );
       setNotes("");
       router.refresh();
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
       setActiveAction(null);

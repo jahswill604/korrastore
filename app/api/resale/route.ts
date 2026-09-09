@@ -9,7 +9,11 @@ import { createResaleListing } from '@/lib/supabase/queries/resale';
 
 // ----------------------------------------------------------------------------
 // POST Handler: Create Resale Listing
-// ----------------------------------------------------------------------------
+/**
+ * Creates a resale listing for the authenticated user and reserves the requested holding quantity.
+ *
+ * @returns A response containing the listing ID on success, or an error message with an appropriate HTTP status.
+ */
 
 export async function POST(req: NextRequest) {
   try {
@@ -85,10 +89,10 @@ export async function POST(req: NextRequest) {
       listingId: result.listingId,
       message: 'Listing created successfully and holding quantity reserved.',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[POST /api/resale] Internal error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

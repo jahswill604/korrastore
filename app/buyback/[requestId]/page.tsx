@@ -11,7 +11,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getBuybackRequestDetail } from '@/lib/supabase/queries/buyback';
 import { AppShell } from '@/components/layout/app-shell';
-import { GradeBadge } from '@/components/ui/grade-badge';
+import { GradeBadge, CommodityGrade } from '@/components/ui/grade-badge';
 import { BuybackTimeline } from '@/components/buyback/buyback-timeline';
 
 // ----------------------------------------------------------------------------
@@ -36,7 +36,11 @@ interface BuybackDetailPageProps {
 
 // ----------------------------------------------------------------------------
 // BuybackDetailPage Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders the authenticated detail page for a specific buyback request.
+ *
+ * @param params - Route parameters containing the buyback request ID
+ */
 
 export default async function BuybackDetailPage({ params }: BuybackDetailPageProps) {
   const { requestId } = await params;
@@ -120,7 +124,7 @@ export default async function BuybackDetailPage({ params }: BuybackDetailPagePro
                     {request.commodity_name}
                   </h3>
                   <div className="mt-2 flex items-center gap-2">
-                    <GradeBadge grade={(request.grade_name as any) || 'Grade A'} size="sm" />
+                    <GradeBadge grade={(request.grade_name as CommodityGrade) || 'Grade A'} size="sm" />
                     <span className="text-xs font-sans-inter text-[#4A3828]/70">
                       • {request.warehouse_name}
                     </span>

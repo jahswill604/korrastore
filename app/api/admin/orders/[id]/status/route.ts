@@ -7,6 +7,11 @@ import { createClient } from '@/lib/supabase/server';
 import { advanceOrderStatus, ALLOWED_STATUS_TRANSITIONS } from '@/lib/supabase/queries/admin/orders';
 import { OrderFulfillmentStatus } from '@/lib/supabase/queries/orders';
 
+/**
+ * Advances an order's fulfillment status for an authenticated administrator.
+ *
+ * @returns A JSON response indicating the updated status or the relevant authentication, authorization, validation, or server error.
+ */
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -60,7 +65,7 @@ export async function POST(
       message: `Order status advanced to ${targetStatus}.`,
       updatedStatus: result.updatedStatus,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error in POST /api/admin/orders/[id]/status:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }
