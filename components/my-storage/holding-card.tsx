@@ -252,18 +252,11 @@ export function HoldingCard({ holding }: HoldingCardProps) {
         </div>
 
         {/* ======================== HOLDING ACTIONS ======================== */}
-        {/* Client Component handling Resell / Buyback / Delivery button routing */}
+        {/* Client Component handling Delivery button routing (buy-only MVP scope) */}
         <HoldingActions
           holdingId={holding.id}
-          commodityId={holding.commodityId}
-          gradeId={holding.gradeId}
           availableQuantity={holding.availableQuantity}
           commodityName={holding.commodityName}
-          gradeCode={holding.gradeCode}
-          gradeName={holding.gradeName}
-          commodityUnit={holding.commodityUnit}
-          currentUnitPrice={holding.currentUnitPrice}
-          warehouseName={holding.warehouseName}
         />
       </div>
     </div>
