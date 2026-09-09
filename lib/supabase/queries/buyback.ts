@@ -173,7 +173,19 @@ export async function getBuyerBuybackRequests(
       return fallback;
     }
 
-    return data.map((row: any) => ({
+    interface RawBuybackRow {
+      id: string;
+      holding_id: string;
+      quantity: number;
+      offered_price: number;
+      total_amount: number;
+      status: string;
+      requested_at: string;
+      commodities?: { name?: string; unit?: string } | null;
+      commodity_grades?: { code?: string; name?: string } | null;
+    }
+
+    return (data as RawBuybackRow[]).map((row) => ({
       id: row.id,
       holding_id: row.holding_id,
       quantity: Number(row.quantity),
@@ -243,7 +255,27 @@ export async function getBuybackRequestDetail(
       return null;
     }
 
-    const row = data as any;
+    interface RawBuybackDetailRow {
+      id: string;
+      holding_id: string;
+      user_id: string;
+      commodity_id: string;
+      grade_id: string;
+      quantity: number;
+      offered_price: number;
+      total_amount: number;
+      status: string;
+      admin_notes: string | null;
+      requested_at: string;
+      processed_at: string | null;
+      created_at: string;
+      updated_at: string;
+      commodities?: { name?: string; unit?: string } | null;
+      commodity_grades?: { code?: string; name?: string } | null;
+      holdings?: { warehouses?: { name?: string } | null } | null;
+    }
+
+    const row = data as unknown as RawBuybackDetailRow;
     return {
       id: row.id,
       holding_id: row.holding_id,
@@ -380,7 +412,7 @@ export async function submitBuybackRequest(
     }
 
     // 2. Determine live buyback price
-    const commodityData = holding.commodities as any;
+    const commodityData = holding.commodities as { buyback_price?: number; current_price?: number } | null;
     let buybackPrice = Number(commodityData?.buyback_price ?? 0);
     if (!buybackPrice || buybackPrice <= 0) {
       const currentPrice = Number(commodityData?.current_price ?? 0);
@@ -451,11 +483,11 @@ export async function submitBuybackRequest(
       requestId: requestData.id,
       totalAmount,
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error('[submitBuybackRequest] Exception:', error);
     return {
       success: false,
-      error: error.message || 'An unexpected error occurred during buyback submission.',
+      error: error instanceof Error ? error.message : 'An unexpected error occurred during buyback submission.',
     };
   }
 }

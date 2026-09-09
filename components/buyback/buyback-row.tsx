@@ -7,7 +7,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { BuybackRequestRow, BuybackStatus } from '@/lib/supabase/queries/buyback';
-import { GradeBadge } from '@/components/ui/grade-badge';
+import { GradeBadge, CommodityGrade } from '@/components/ui/grade-badge';
 
 // ----------------------------------------------------------------------------
 // Props Interface
@@ -79,7 +79,7 @@ export function BuybackRow({ request }: BuybackRowProps) {
             {request.commodity_name}
           </p>
           <div className="mt-1">
-            <GradeBadge grade={(request.grade_name as any) || 'Grade A'} size="sm" />
+            <GradeBadge grade={(request.grade_name as CommodityGrade) || 'Grade A'} size="sm" />
           </div>
         </div>
 
@@ -134,7 +134,7 @@ export function BuybackRow({ request }: BuybackRowProps) {
               {request.commodity_name}
             </h4>
             <div className="mt-1">
-              <GradeBadge grade={(request.grade_name as any) || 'Grade A'} size="sm" />
+              <GradeBadge grade={(request.grade_name as CommodityGrade) || 'Grade A'} size="sm" />
             </div>
           </div>
           <div>{renderStatusBadge(request.status)}</div>

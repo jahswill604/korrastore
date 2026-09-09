@@ -51,11 +51,21 @@ export function ResaleCard({ listing }: ResaleCardProps) {
       : 'Grade C'
   ) as CommodityGrade;
 
+  // "Now" read via useSyncExternalStore — the sanctioned way to read an
+  // external, impure value (Date.now()) without violating the render-purity
+  // rule that a plain `Date.now()` call inside useMemo/render trips.
+  const now = React.useSyncExternalStore(
+    () => () => {},
+    () => Date.now(),
+    () => 0
+  );
+
   // Relative listing time helper
   const formattedDate = React.useMemo(() => {
+    if (now === 0) return 'Recently listed';
     try {
       const created = new Date(listing.createdAt);
-      const diffMs = Date.now() - created.getTime();
+      const diffMs = now - created.getTime();
       const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       if (diffDays <= 0) return 'Listed today';
       if (diffDays === 1) return 'Listed 1d ago';
@@ -63,7 +73,7 @@ export function ResaleCard({ listing }: ResaleCardProps) {
     } catch {
       return 'Recently listed';
     }
-  }, [listing.createdAt]);
+  }, [listing.createdAt, now]);
 
   // Handle direct listing purchase
   const handleBuyListing = async () => {

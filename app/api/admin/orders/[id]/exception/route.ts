@@ -58,7 +58,7 @@ export async function POST(
       success: true,
       message: action === 'allocate_inventory' ? 'Exception resolved and inventory allocated.' : 'Order cancelled and refund logged.',
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error in POST /api/admin/orders/[id]/exception:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }

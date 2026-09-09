@@ -8,7 +8,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { GradeBadge } from '@/components/ui/grade-badge';
+import { GradeBadge, CommodityGrade } from '@/components/ui/grade-badge';
 
 // ----------------------------------------------------------------------------
 // Props & Type Interfaces
@@ -48,38 +48,48 @@ export function RequestBuybackModal({ isOpen, onClose, holding }: RequestModalPr
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // Initialize or reset state when modal opens or holding changes
-  useEffect(() => {
-    if (isOpen && holding) {
+  // Reset form fields when the modal is (re)opened for a given holding.
+  // Adjusting state during render (rather than in a useEffect) is the pattern
+  // React recommends for "reset state when a prop changes".
+  const [resetKey, setResetKey] = useState<string | null>(null);
+  const currentKey = isOpen && holding ? holding.id : null;
+  if (currentKey !== resetKey) {
+    setResetKey(currentKey);
+    if (currentKey && holding) {
       setQuantity(1);
       setErrorMsg(null);
       setSuccessMsg(null);
-
-      // Estimate baseline buyback price (e.g. 95% of current market price)
       const fallbackPrice = holding.currentUnitPrice
         ? Math.round(holding.currentUnitPrice * 0.95)
         : 64500;
       setBuybackPrice(fallbackPrice);
-
-      // Fetch live admin-configured buyback price if commodityId is available
-      if (holding.commodityId) {
-        setIsLoadingPrice(true);
-        fetch(`/api/buybacks/price?commodityId=${holding.commodityId}`)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success && data.buybackPrice) {
-              setBuybackPrice(data.buybackPrice);
-            }
-          })
-          .catch((err) => {
-            console.warn('[RequestBuybackModal] Could not fetch live price, using fallback:', err);
-          })
-          .finally(() => {
-            setIsLoadingPrice(false);
-          });
-      }
     }
-  }, [isOpen, holding]);
+  }
+
+  // Fetch the live admin-configured buyback price — a genuine effect (reading
+  // from an external system), not a state-reset, so it stays in useEffect.
+  useEffect(() => {
+    if (isOpen && holding?.commodityId) {
+      // This is the standard React data-fetching-in-effect pattern (setting a
+      // loading flag before kicking off the request) — see
+      // https://react.dev/reference/react/useEffect#fetching-data-with-effects.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsLoadingPrice(true);
+      fetch(`/api/buybacks/price?commodityId=${holding.commodityId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.buybackPrice) {
+            setBuybackPrice(data.buybackPrice);
+          }
+        })
+        .catch((err) => {
+          console.warn('[RequestBuybackModal] Could not fetch live price, using fallback:', err);
+        })
+        .finally(() => {
+          setIsLoadingPrice(false);
+        });
+    }
+  }, [isOpen, holding?.commodityId]);
 
   if (!isOpen || !holding) return null;
 
@@ -133,8 +143,8 @@ export function RequestBuybackModal({ isOpen, onClose, holding }: RequestModalPr
         router.push('/buyback');
         router.refresh();
       }, 1200);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'An unexpected error occurred. Please try again.');
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -181,7 +191,7 @@ export function RequestBuybackModal({ isOpen, onClose, holding }: RequestModalPr
                 {holding.commodityName}
               </p>
               <div className="flex items-center gap-2 mt-1">
-                <GradeBadge grade={(holding.gradeName as any) || 'Grade A'} size="sm" />
+                <GradeBadge grade={(holding.gradeName as CommodityGrade) || 'Grade A'} size="sm" />
                 <span className="text-xs font-sans-inter text-[#A88958]">
                   {holding.warehouseName || 'KorraStore Warehouse'}
                 </span>

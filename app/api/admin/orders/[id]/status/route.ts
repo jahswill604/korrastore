@@ -60,7 +60,7 @@ export async function POST(
       message: `Order status advanced to ${targetStatus}.`,
       updatedStatus: result.updatedStatus,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('Error in POST /api/admin/orders/[id]/status:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }

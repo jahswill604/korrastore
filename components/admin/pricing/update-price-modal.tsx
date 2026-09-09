@@ -38,26 +38,6 @@ export function UpdatePriceModal({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Initialize form state when commodity changes or modal opens
-  useEffect(() => {
-    if (commodity && isOpen) {
-      setNewSalePrice(commodity.current_price);
-      setNewBuybackPrice(commodity.buyback_price);
-      setChangeReason('');
-      setErrorMessage(null);
-
-      // Default to first grade or empty
-      if (commodity.grades && commodity.grades.length > 0) {
-        setSelectedGradeId(commodity.grades[0].id);
-      } else {
-        setSelectedGradeId('');
-      }
-
-      // Fetch price history points for chart
-      fetchHistory(commodity.id);
-    }
-  }, [commodity, isOpen]);
-
   // Fetch price history from API
   const fetchHistory = async (commodityId: string) => {
     setLoadingHistory(true);
@@ -73,6 +53,33 @@ export function UpdatePriceModal({
       setLoadingHistory(false);
     }
   };
+
+  // Reset form fields whenever the modal is (re)opened for a given commodity.
+  // Adjusting state during render (rather than in a useEffect) is the pattern
+  // React recommends for "reset state when a prop changes".
+  const resetIdentity = isOpen && commodity ? commodity.id : null;
+  const [prevResetIdentity, setPrevResetIdentity] = useState<string | null>(null);
+  if (resetIdentity !== prevResetIdentity) {
+    setPrevResetIdentity(resetIdentity);
+    if (resetIdentity && commodity) {
+      setNewSalePrice(commodity.current_price);
+      setNewBuybackPrice(commodity.buyback_price);
+      setChangeReason('');
+      setErrorMessage(null);
+      setSelectedGradeId(commodity.grades && commodity.grades.length > 0 ? commodity.grades[0].id : '');
+    }
+  }
+
+  // Fetching price history from the server on open IS a genuine effect
+  // (reading from an external system), so it stays here.
+  useEffect(() => {
+    if (commodity && isOpen) {
+      // Standard React data-fetching-in-effect pattern (fetchHistory sets a
+      // loading flag before making the request).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchHistory(commodity.id);
+    }
+  }, [commodity, isOpen]);
 
   // Auto-calculate suggested buyback price (90% spread) when sale price changes
   const handleSalePriceChange = (val: number) => {

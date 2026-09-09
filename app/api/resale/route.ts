@@ -85,10 +85,10 @@ export async function POST(req: NextRequest) {
       listingId: result.listingId,
       message: 'Listing created successfully and holding quantity reserved.',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[POST /api/resale] Internal error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

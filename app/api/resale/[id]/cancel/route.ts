@@ -52,10 +52,10 @@ export async function POST(
       success: true,
       message: 'Listing cancelled successfully and reserved quantity released.',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[POST /api/resale/[id]/cancel] Internal error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

@@ -59,8 +59,8 @@ export function StatusAdvanceControl({
       setSuccessMessage(`Order status successfully updated to ${selectedStatus}.`);
       setAdminNotes("");
       router.refresh();
-    } catch (err: any) {
-      setErrorMessage(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
     }

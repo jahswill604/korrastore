@@ -64,10 +64,10 @@ export async function PATCH(
       success: true,
       message: 'Listing asking price updated successfully.',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[PATCH /api/resale/[id]/price] Internal error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

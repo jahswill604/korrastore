@@ -77,8 +77,9 @@ export function OrderAuditTrail({ auditTrail }: OrderAuditTrailProps) {
 
       <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#E4DCC8]">
         {auditTrail.map((entry) => {
-          const newStatus = (entry.newState as any)?.status;
-          const notes = (entry.newState as any)?.notes;
+          const newStateTyped = entry.newState as { status?: string; notes?: string } | null;
+          const newStatus = newStateTyped?.status;
+          const notes = newStateTyped?.notes;
 
           return (
             <div key={entry.id} className="relative group">

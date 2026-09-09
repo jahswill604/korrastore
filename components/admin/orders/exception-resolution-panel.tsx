@@ -53,8 +53,8 @@ export function ExceptionResolutionPanel({
       );
       setNotes("");
       router.refresh();
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "An unexpected error occurred.");
     } finally {
       setIsSubmitting(false);
       setActiveAction(null);

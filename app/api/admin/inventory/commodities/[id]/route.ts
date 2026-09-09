@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { upsertCommodity, toggleCommodityActive, upsertGrade, deactivateGrade } from '@/lib/supabase/queries/admin/inventory';
+import { UpsertCommodityPayload, UpsertGradePayload } from '@/lib/types/admin-inventory';
 
 // ----------------------------------------------------------------------------
 // Admin Role Guard Helper
@@ -40,7 +41,7 @@ export async function PUT(
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const result = await upsertCommodity({ ...body, id } as any);
+  const result = await upsertCommodity({ ...body, id } as unknown as UpsertCommodityPayload);
   if (!result) return NextResponse.json({ error: 'Failed to update commodity' }, { status: 500 });
 
   return NextResponse.json({ commodity: result });
@@ -74,7 +75,7 @@ export async function PATCH(
 
   // Handle grade upsert
   if (body.action === 'upsert_grade' && body.grade) {
-    const grade = await upsertGrade(body.grade as any);
+    const grade = await upsertGrade(body.grade as unknown as UpsertGradePayload);
     if (!grade) return NextResponse.json({ error: 'Failed to save grade' }, { status: 500 });
     return NextResponse.json({ grade });
   }

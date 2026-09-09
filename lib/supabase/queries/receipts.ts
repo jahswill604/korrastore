@@ -150,7 +150,7 @@ export async function getReceiptDetail(
 
   try {
     // 1. First attempt direct query on receipts table
-    const { data: receiptRow, error: receiptError } = await supabase
+    const { data: receiptRow } = await supabase
       .from('receipts')
       .select('*')
       .or(`id.eq.${receiptIdOrOrderId},order_id.eq.${receiptIdOrOrderId},holding_id.eq.${receiptIdOrOrderId},receipt_number.eq.${receiptIdOrOrderId}`)

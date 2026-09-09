@@ -62,10 +62,10 @@ export async function POST(req: NextRequest) {
       totalAmount: result.totalAmount,
       message: 'Buyback request submitted successfully.',
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('[POST /api/buybacks] Internal error:', error);
     return NextResponse.json(
-      { error: error.message || 'Internal Server Error' },
+      { error: error instanceof Error ? error.message : 'Internal Server Error' },
       { status: 500 }
     );
   }

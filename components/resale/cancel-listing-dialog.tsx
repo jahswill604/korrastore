@@ -60,8 +60,8 @@ export function CancelListingDialog({
         onClose();
         if (onSuccess) onSuccess();
         router.refresh();
-      } catch (err: any) {
-        setErrorMessage(err.message || 'An error occurred while cancelling the listing.');
+      } catch (err) {
+        setErrorMessage(err instanceof Error ? err.message : 'An error occurred while cancelling the listing.');
       }
     });
   };

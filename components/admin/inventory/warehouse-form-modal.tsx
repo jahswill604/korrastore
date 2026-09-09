@@ -39,26 +39,31 @@ export function WarehouseFormModal({
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
-    if (isOpen) {
-      if (warehouse) {
-        setName(warehouse.name);
-        setCode(warehouse.code);
-        setLocation(warehouse.location);
-        setAddress(warehouse.address || "");
-        setCapacity(warehouse.capacity || 0);
-        setActive(warehouse.active ?? true);
-      } else {
-        setName("");
-        setCode("");
-        setLocation("");
-        setAddress("");
-        setCapacity(50000);
-        setActive(true);
-      }
-      setError(null);
+  // Reset form fields whenever the modal is (re)opened, or a different
+  // warehouse is being edited. Adjusting state during render (rather than in
+  // a useEffect) is the pattern React recommends for "reset state when a prop
+  // changes".
+  const resetIdentity = isOpen ? (warehouse ? `edit:${warehouse.id}` : "create") : null;
+  const [prevResetIdentity, setPrevResetIdentity] = React.useState<string | null>(null);
+  if (resetIdentity !== prevResetIdentity) {
+    setPrevResetIdentity(resetIdentity);
+    if (resetIdentity && warehouse) {
+      setName(warehouse.name);
+      setCode(warehouse.code);
+      setLocation(warehouse.location);
+      setAddress(warehouse.address || "");
+      setCapacity(warehouse.capacity || 0);
+      setActive(warehouse.active ?? true);
+    } else if (resetIdentity === "create") {
+      setName("");
+      setCode("");
+      setLocation("");
+      setAddress("");
+      setCapacity(50000);
+      setActive(true);
     }
-  }, [isOpen, warehouse]);
+    if (resetIdentity) setError(null);
+  }
 
   if (!isOpen) return null;
 

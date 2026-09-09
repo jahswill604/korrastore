@@ -432,7 +432,24 @@ export async function getMyResaleListings(
       return getFallbackSellerListings(userId, status);
     }
 
-    return data.map((row: any) => {
+    interface RawResaleListingRow {
+      id: string;
+      holding_id: string;
+      seller_id: string;
+      commodity_id: string;
+      grade_id: string;
+      quantity: number;
+      unit_price: number;
+      status: string;
+      expires_at: string | null;
+      created_at: string;
+      updated_at: string;
+      commodities?: { name?: string; code?: string; unit?: string; image_url?: string } | null;
+      commodity_grades?: { code?: string; name?: string } | null;
+      holdings?: { warehouses?: { name?: string; location?: string } | null } | null;
+    }
+
+    return (data as RawResaleListingRow[]).map((row) => {
       const comm = row.commodities || {};
       const grade = row.commodity_grades || {};
       const wh = row.holdings?.warehouses || {};
@@ -580,9 +597,9 @@ export async function createResaleListing(
     }
 
     return { success: true, listingId: newListing.id };
-  } catch (err: any) {
+  } catch (err) {
     console.error('[createResaleListing] Unexpected error:', err);
-    return { success: false, error: err.message || 'An unexpected error occurred.' };
+    return { success: false, error: (err instanceof Error ? err.message : undefined) || 'An unexpected error occurred.' };
   }
 }
 
@@ -645,8 +662,8 @@ export async function updateListingPrice(
     }
 
     return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err.message || 'An unexpected error occurred.' };
+  } catch (err) {
+    return { success: false, error: (err instanceof Error ? err.message : undefined) || 'An unexpected error occurred.' };
   }
 }
 
@@ -745,8 +762,8 @@ export async function cancelResaleListing(
     }
 
     return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err.message || 'An unexpected error occurred.' };
+  } catch (err) {
+    return { success: false, error: (err instanceof Error ? err.message : undefined) || 'An unexpected error occurred.' };
   }
 }
 

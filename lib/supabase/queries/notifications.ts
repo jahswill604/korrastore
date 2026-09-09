@@ -24,7 +24,7 @@ export interface InAppNotification {
   type: NotificationType | string;
   title: string;
   body: string;
-  payload: Record<string, any>;
+  payload: Record<string, unknown>;
   isRead: boolean;
   readAt: string | null;
   createdAt: string;
@@ -36,7 +36,7 @@ export interface InAppNotification {
 // ----------------------------------------------------------------------------
 export function deriveNotificationLink(
   type: string,
-  payload: Record<string, any>
+  payload: Record<string, unknown>
 ): string | null {
   if (payload?.link && typeof payload.link === 'string') {
     return payload.link;
@@ -173,8 +173,21 @@ export async function getInAppNotifications(
       return fallback;
     }
 
-    return data.map((row: any) => {
-      const payload = (row.payload as Record<string, any>) || {};
+    interface RawNotificationRow {
+      id: string;
+      user_id: string;
+      channel: 'in_app' | 'email' | 'sms';
+      type: string | null;
+      title: string;
+      body: string;
+      payload: Record<string, unknown> | null;
+      is_read: boolean | null;
+      read_at: string | null;
+      created_at: string;
+    }
+
+    return (data as RawNotificationRow[]).map((row) => {
+      const payload = row.payload || {};
       const type = (row.type as string) || 'general';
       return {
         id: row.id,
@@ -214,7 +227,7 @@ export async function getUnreadNotificationsCount(userId: string): Promise<numbe
     }
 
     return count;
-  } catch (err) {
+  } catch {
     return DEMO_NOTIFICATIONS.filter((n) => !n.isRead).length;
   }
 }
@@ -285,7 +298,7 @@ export async function createInAppNotification(params: {
   type: NotificationType | string;
   title: string;
   body: string;
-  payload?: Record<string, any>;
+  payload?: Record<string, unknown>;
 }): Promise<string | null> {
   try {
     const supabase = createServiceClient();

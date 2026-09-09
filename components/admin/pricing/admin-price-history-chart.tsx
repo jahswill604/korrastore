@@ -5,7 +5,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { PriceHistoryPoint } from '@/lib/types/admin-pricing';
 import {
   ResponsiveContainer,
@@ -34,11 +34,13 @@ export function AdminPriceHistoryChart({
   unit = 'kg',
 }: AdminPriceHistoryChartProps) {
   const [range, setRange] = useState<TimeRange>('30d');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Client-mount guard for Recharts' ResponsiveContainer (avoids SSR/CSR
+  // hydration mismatch on first paint).
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Filter history points based on selected range
   const filteredData = useMemo(() => {

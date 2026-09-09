@@ -29,11 +29,14 @@ export function PriceHistoryChart({
   commodityName,
 }: PriceHistoryChartProps) {
   const [range, setRange] = React.useState<TimeRange>("30d");
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Client-mount guard for Recharts' ResponsiveContainer (avoids SSR/CSR
+  // hydration mismatch on first paint). useSyncExternalStore triggers the
+  // post-hydration re-render without an explicit setState-in-effect call.
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Filter data based on selected time range
   const filteredData = React.useMemo(() => {

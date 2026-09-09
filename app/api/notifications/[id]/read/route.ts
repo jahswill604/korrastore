@@ -39,10 +39,10 @@ export async function POST(
     }
 
     return NextResponse.json({ success: true });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[POST /api/notifications/[id]/read] Error:', err);
     return NextResponse.json(
-      { error: err?.message || 'Internal server error.' },
+      { error: err instanceof Error ? err.message : 'Internal server error.' },
       { status: 500 }
     );
   }
