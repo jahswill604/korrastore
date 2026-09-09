@@ -40,7 +40,13 @@ interface PaystackWebhookEvent {
 // Verifies the `x-paystack-signature` header against an HMAC-SHA512 of the
 // raw request body, computed with PAYSTACK_SECRET_KEY. Returns false (and
 // logs) if the secret isn't configured — signature checks cannot be skipped.
-// -------------------------
+/**
+ * Verifies a Paystack webhook signature against the raw request body.
+ *
+ * @param rawBody - The unparsed webhook request body
+ * @param signatureHeader - The signature from the `x-paystack-signature` header
+ * @returns `true` if the signature matches the configured secret, `false` otherwise.
+ */
 function isValidSignature(rawBody: string, signatureHeader: string | null): boolean {
   const secret = process.env.PAYSTACK_SECRET_KEY;
   if (!secret || secret.includes('placeholder')) {
@@ -58,6 +64,12 @@ function isValidSignature(rawBody: string, signatureHeader: string | null): bool
   return crypto.timingSafeEqual(expectedBuf, givenBuf);
 }
 
+/**
+ * Processes verified Paystack charge events by recording the payment, allocating inventory, and completing the order.
+ *
+ * @param request - The incoming Paystack webhook request.
+ * @returns An HTTP response indicating whether the webhook was accepted, ignored, processed, or requires reconciliation.
+ */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // -------------------------
   // Step 1: Read the RAW body first — signature verification requires the

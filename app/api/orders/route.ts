@@ -13,7 +13,12 @@ import { paystackAdapter } from '@/lib/domain/payments/paystack-adapter';
 // POST /api/orders
 // Body: { commodityId: string, gradeId: string, quantity: number }
 // Returns: { authorizationUrl: string, orderId: string } on success
-// -------------------------
+/**
+ * Creates an authenticated buyer's pending order and initializes its Paystack payment.
+ *
+ * @param request - The request containing the selected commodity, grade, and quantity.
+ * @returns A response containing the Paystack authorization URL and order ID.
+ */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // -------------------------
   // Step 1: Verify the buyer's session using getUser() — mandatory per AGENTS.md §13.

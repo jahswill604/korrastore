@@ -34,7 +34,16 @@ interface MiniToast {
 
 // ----------------------------------------------------------------------------
 // HoldingActions Component
-// ----------------------------------------------------------------------------
+/**
+ * Renders delivery actions for a holding.
+ *
+ * Delivery is disabled when no quantity is available and displays a temporary
+ * “Coming soon” message when requested.
+ *
+ * @param holdingId - Identifier used to associate the delivery action with the holding
+ * @param availableQuantity - Quantity available for delivery
+ * @param commodityName - Commodity name displayed in the action label and disabled-state tooltip
+ */
 
 export function HoldingActions({
   holdingId,
@@ -43,7 +52,11 @@ export function HoldingActions({
 }: HoldingActionsProps) {
   const [toast, setToast] = useState<MiniToast>({ message: '', visible: false });
 
-  /** Shows a brief "Coming soon" toast for unbuilt downstream routes */
+  /**
+   * Displays a temporary toast indicating that a feature is coming soon.
+   *
+   * @param feature - The feature name included in the toast message
+   */
   function showComingSoonToast(feature: string) {
     setToast({ message: `${feature} — Coming soon!`, visible: true });
     setTimeout(() => setToast({ message: '', visible: false }), 3000);
