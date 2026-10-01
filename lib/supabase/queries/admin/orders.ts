@@ -50,7 +50,7 @@ function formatRelativeTime(isoString: string): string {
 // ----------------------------------------------------------------------------
 // Fetch All Admin Orders (with Filtering & Metrics)
 /**
- * Retrieves a filtered, paginated list of orders and aggregate order metrics for administrative use.
+ * Retrieves filtered, paginated orders and aggregate metrics for administrative use.
  *
  * @param filters - Optional status, exception, search, page, and page-size filters.
  * @returns The matching orders, aggregate metrics, pagination totals, and current page.

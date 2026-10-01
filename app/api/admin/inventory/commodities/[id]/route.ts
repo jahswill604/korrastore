@@ -57,7 +57,7 @@ export async function PUT(
  * Updates a commodity's active status or manages one of its grades.
  *
  * @param params - Route parameters containing the commodity identifier.
- * @returns A response indicating the operation result or an error.
+ * @returns A response containing the operation result or an error message.
  */
 
 export async function PATCH(

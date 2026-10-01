@@ -24,9 +24,9 @@ async function requireAdmin(): Promise<{ adminId: string } | NextResponse> {
 }
 
 /**
- * Updates an administrator-managed warehouse identified by the route parameter.
+ * Updates a warehouse identified by the route parameter.
  *
- * @returns A response containing the updated warehouse, or an error response for unauthorized access, invalid JSON, or update failure.
+ * @returns A response containing the updated warehouse or an error status.
  */
 export async function PUT(
   req: NextRequest,

@@ -135,10 +135,7 @@ const DEMO_RECEIPTS: Record<string, ReceiptDetail> = {
 // ----------------------------------------------------------------------------
 
 /**
- * Retrieves normalized receipt details for a user-owned receipt or order.
- *
- * Uses current holding or commodity pricing when available and supports pending
- * orders and development fallback records.
+ * Retrieves normalized receipt details for a user-owned receipt or order, including current valuation when available.
  *
  * @param userId - User ID used to restrict receipt and order lookups
  * @param receiptIdOrOrderId - Receipt ID, receipt number, holding ID, or order ID
