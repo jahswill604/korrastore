@@ -76,7 +76,11 @@ function formatDate(dateString: string): string {
 
 // ----------------------------------------------------------------------------
 // HoldingCard Component
-// ----------------------------------------------------------------------------
+/**
+ * Displays a commodity holding with quantity, valuation, storage details, and available actions.
+ *
+ * @param holding - Holding data used to populate the card
+ */
 
 export function HoldingCard({ holding }: HoldingCardProps) {
   const gradeStyle = getGradeStyle(holding.gradeCode);

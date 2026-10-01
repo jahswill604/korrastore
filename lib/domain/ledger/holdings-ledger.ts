@@ -26,21 +26,13 @@ export interface AllocatePurchaseResult {
 }
 
 /**
- * Moves a confirmed, paid order's quantity out of platform inventory and into
- * the buyer's holding, writing both immutable ledger rows in the process.
+ * Allocates a paid order from platform inventory to the buyer's holding and records both ledger movements.
  *
- * Sequence (no native Postgres transaction — service-role sequential writes,
- * matching the pattern already used by adjustInventory in inventory-ledger.ts):
- *  1. Find the matching inventory row (warehouse + commodity + grade).
- *  2. Validate enough physical stock exists; decrement inventory.quantity.
- *  3. Write an inventory_movements row (movement_type='SALE').
- *  4. Upsert the buyer's holding for this commodity/grade/warehouse
- *     (increment quantity, recompute weighted-average cost basis).
- *  5. Write a holding_movements row (movement_type='purchase').
+ * Balance updates and movement records are written sequentially without a native database transaction; a failure after a balance update may require manual reconciliation.
  *
- * Throws on any failure — the caller (webhook handler) is responsible for
- * logging the exception clearly for manual reconciliation, since the payment
- * has already been captured at this point.
+ * @param params - The order, buyer, inventory dimensions, quantity, and unit purchase price.
+ * @returns The affected holding ID, movement IDs, and resulting holding quantity.
+ * @throws Error if the quantity is invalid, inventory is unavailable or insufficient, or any balance or movement write fails.
  */
 export async function allocatePurchaseToHolding(
   params: AllocatePurchaseParams
